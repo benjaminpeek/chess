@@ -57,28 +57,29 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         // switch on type of piece we are, if bishop: do it in place here or call a helper method for bishop moves, or
         // helper from a different class, different methods for all the pieces
+        HashSet<ChessMove> moves = new HashSet<>();
         switch (this.type) {
             case KING -> {
-                System.out.println("king");
+                // king moves
             }
             case QUEEN -> {
-                System.out.println("queen");
+                // queen moves
             }
             case ROOK -> {
-                System.out.println("rook");
+                // rook moves
             }
             case BISHOP -> {
-                System.out.println("bishop");
+                // bishop moves
             }
             case KNIGHT -> {
-                System.out.println("knight");
+                // knight moves
             }
             case PAWN -> {
-                System.out.println("pawn");
+                // pawn moves
             }
         }
 
-        return new ArrayList<>();
+        return moves;
     }
 
     @Override
