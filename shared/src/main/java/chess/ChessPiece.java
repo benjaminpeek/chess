@@ -1,4 +1,5 @@
 package chess;
+import chess.KingMoveCalculator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +16,7 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
 
         this.pieceColor = pieceColor;
         this.type = type;
@@ -57,10 +58,10 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         // switch on type of piece we are, if bishop: do it in place here or call a helper method for bishop moves, or
         // helper from a different class, different methods for all the pieces
-        HashSet<ChessMove> moves = new HashSet<>();
+        PieceMoveCalculator moveCalculator = null;
         switch (this.type) {
             case KING -> {
-                // king moves
+                moveCalculator = new KingMoveCalculator();
             }
             case QUEEN -> {
                 // queen moves
@@ -79,7 +80,8 @@ public class ChessPiece {
             }
         }
 
-        return moves;
+        assert moveCalculator != null;
+        return moveCalculator.pieceMoves(board, myPosition);
     }
 
     @Override
