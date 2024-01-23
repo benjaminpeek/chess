@@ -56,8 +56,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        // switch on type of piece we are, if bishop: do it in place here or call a helper method for bishop moves, or
-        // helper from a different class, different methods for all the pieces
+        // switch on type of piece we are, instantiate moveCalculator as appropriate calculator, then at the end call
+        // pieceMoves on the move calculator
         PieceMoveCalculator moveCalculator = null;
         switch (this.type) {
             case KING -> {
@@ -76,7 +76,7 @@ public class ChessPiece {
                 moveCalculator = new KnightMoveCalculator();
             }
             case PAWN -> {
-                // pawn moves
+                moveCalculator = new PawnMoveCalculator();
             }
         }
 
