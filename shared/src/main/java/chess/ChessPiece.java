@@ -70,7 +70,7 @@ public class ChessPiece {
                 // rook moves
             }
             case BISHOP -> {
-                // bishop moves
+                moveCalculator = new BishopMoveCalculator();
             }
             case KNIGHT -> {
                 moveCalculator = new KnightMoveCalculator();
