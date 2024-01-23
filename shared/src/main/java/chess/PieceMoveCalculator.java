@@ -12,4 +12,20 @@ public abstract class PieceMoveCalculator {
      * @return - a collection of possible moves for the piece
      */
     public abstract Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
+
+    public Collection<ChessMove> diagonalMoves(ChessBoard board, ChessPosition myPosition) {
+        HashSet<ChessMove> moves = new HashSet<>();
+
+
+
+        return moves;
+    }
+
+    public Collection<ChessMove> orthogonalMoves(ChessBoard board, ChessPosition myPosition) {
+        HashSet<ChessMove> moves = new HashSet<>();
+
+
+
+        return moves;
+    }
 }

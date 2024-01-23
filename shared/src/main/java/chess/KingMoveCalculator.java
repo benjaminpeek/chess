@@ -13,14 +13,12 @@ public class KingMoveCalculator extends PieceMoveCalculator {
         ChessGame.TeamColor myColor = board.getPiece(new ChessPosition(row, col)).getTeamColor();
 
         // column to the left of the king
+        // checkRow checks row under the king, same row as king, and the row above the king in each for loop
         int checkRow = row - 1;
         for (int i = 0; i < 3; i++) {
-            if (checkRow <= 7 && ((col - 1) <= 7)) {
+            if (checkRow <= 7 && checkRow >= 0 && ((col - 1) <= 7) && ((col - 1) >= 0)) {
                 ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, col - 1));
-                if (checkPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, col - 1), null));
-                }
-                else if (checkPiece.getTeamColor() != myColor) {
+                if (checkPiece == null || checkPiece.getTeamColor() != myColor) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, col - 1), null));
                 }
             }
@@ -31,12 +29,9 @@ public class KingMoveCalculator extends PieceMoveCalculator {
         // same column as the king
         checkRow = row - 1;
         for (int i = 0; i < 3; i++) {
-            if (checkRow <= 7) {
+            if (checkRow <= 7 && checkRow >= 0) {
                 ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, col));
-                if (checkPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, col), null));
-                }
-                else if (checkPiece.getTeamColor() != myColor) {
+                if (checkPiece == null || checkPiece.getTeamColor() != myColor) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, col), null));
                 }
             }
@@ -47,12 +42,9 @@ public class KingMoveCalculator extends PieceMoveCalculator {
         // column to right of the king
         checkRow = row - 1;
         for (int i = 0; i < 3; i++) {
-            if (checkRow <= 7 && ((col + 1) <= 7)) {
+            if (checkRow <= 7 && checkRow >= 0 && ((col + 1) <= 7) && ((col + 1) >= 0)) {
                 ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, col + 1));
-                if (checkPiece == null) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, col + 1), null));
-                }
-                else if (checkPiece.getTeamColor() != myColor) {
+                if (checkPiece == null || checkPiece.getTeamColor() != myColor) {
                     moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, col + 1), null));
                 }
             }
