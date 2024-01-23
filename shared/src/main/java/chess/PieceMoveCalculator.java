@@ -40,6 +40,10 @@ public abstract class PieceMoveCalculator {
                 && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
 
             currPiece = board.getPiece(new ChessPosition(currRow, currCol));
+
+            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+                break;
+            }
             if (currPiece != null && currPiece.getTeamColor() != myColor) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
                 break;
@@ -62,6 +66,10 @@ public abstract class PieceMoveCalculator {
                 && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
 
             currPiece = board.getPiece(new ChessPosition(currRow, currCol));
+
+            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+                break;
+            }
             if (currPiece != null && currPiece.getTeamColor() != myColor) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
                 break;
@@ -84,6 +92,10 @@ public abstract class PieceMoveCalculator {
                 && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
 
             currPiece = board.getPiece(new ChessPosition(currRow, currCol));
+
+            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+                break;
+            }
             if (currPiece != null && currPiece.getTeamColor() != myColor) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
                 break;
@@ -106,6 +118,10 @@ public abstract class PieceMoveCalculator {
                 && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
 
             currPiece = board.getPiece(new ChessPosition(currRow, currCol));
+
+            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+                break;
+            }
             if (currPiece != null && currPiece.getTeamColor() != myColor) {
                 moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
                 break;
