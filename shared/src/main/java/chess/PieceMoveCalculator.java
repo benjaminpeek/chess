@@ -4,251 +4,157 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public abstract class PieceMoveCalculator {
-    /**
-     * Calculates the possible moves a piece can make at a given position.
-     *
-     * @param board      - the ChessBoard
-     * @param myPosition - the current ChessPosition of the piece
-     * @return - a collection of possible moves for the piece
-     */
     public abstract Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
-    /**
-     * Method for finding all the diagonal moves a piece could make
-     *
-     * @param board - the ChessBoard
-     * @param myPosition - the current ChessPosition of the piece
-     * @return - a collection of possible diagonal moves the piece could make
-     */
     public Collection<ChessMove> diagonalMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> moves = new HashSet<>();
 
-        // check the 4 diagonal directions, do not go out of range
-        ChessGame.TeamColor myColor = board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn())).getTeamColor();
+        int myRow = myPosition.getRow();
+        int myCol = myPosition.getColumn();
+        ChessPiece myPiece = board.getPiece(myPosition);
 
-        int currRow = myPosition.getRow();
-        int currCol = myPosition.getColumn();
-        ChessPiece currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
+        // 4 diagonal directions to check:
         // up-left
-        currRow++;
-        currCol--;
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+        int checkRow = myRow + 1;
+        int checkCol = myCol - 1;
+        while (checkRow >= 1 && checkRow <= 8
+                && checkCol >= 1 && checkCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, checkCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+                break;
+            } else {
                 break;
             }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-                break;
-            }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currRow++;
-            currCol--;
+            checkRow++;
+            checkCol--;
         }
 
-
-        currRow = myPosition.getRow() - 1;
-        currCol = myPosition.getColumn() - 1;
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
-        // down-left
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
-                break;
-            }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-                break;
-            }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currRow--;
-            currCol--;
-        }
-
-
-        currRow = myPosition.getRow() + 1;
-        currCol = myPosition.getColumn() + 1;
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
         // up-right
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+        checkRow = myRow + 1;
+        checkCol = myCol + 1;
+        while (checkRow >= 1 && checkRow <= 8
+                && checkCol >= 1 && checkCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, checkCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+                break;
+            } else {
                 break;
             }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
+            checkRow++;
+            checkCol++;
+        }
+
+        // down-left
+        checkRow = myRow - 1;
+        checkCol = myCol - 1;
+        while (checkRow >= 1 && checkRow <= 8
+                && checkCol >= 1 && checkCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, checkCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+                break;
+            } else {
                 break;
             }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currRow++;
-            currCol++;
+            checkRow--;
+            checkCol--;
         }
 
-
-        currRow = myPosition.getRow() - 1;
-        currCol = myPosition.getColumn() + 1;
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
         // down-right
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+        checkRow = myRow - 1;
+        checkCol = myCol + 1;
+        while (checkRow >= 1 && checkRow <= 8
+                && checkCol >= 1 && checkCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, checkCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, checkCol), null));
+                break;
+            } else {
                 break;
             }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-                break;
-            }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currRow--;
-            currCol++;
+            checkRow--;
+            checkCol++;
         }
 
         return moves;
     }
 
-    /**
-     * Method for finding all the orthogonal moves a piece could make
-     *
-     * @param board - the ChessBoard
-     * @param myPosition - the current ChessPosition of the piece
-     * @return - a collection of possible orthogonal moves the piece could make
-     */
     public Collection<ChessMove> orthogonalMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> moves = new HashSet<>();
 
-        // check the 4 orthogonal directions, do not go out of range
-        ChessGame.TeamColor myColor = board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn())).getTeamColor();
+        int myRow = myPosition.getRow();
+        int myCol = myPosition.getColumn();
+        ChessPiece myPiece = board.getPiece(myPosition);
 
-        int currRow = myPosition.getRow();
-        int currCol = myPosition.getColumn();
-        ChessPiece currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-        // up: same column, row++
-        currRow++;
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+        // 4 orthogonal directions:
+        // up
+        int checkRow = myRow + 1;
+        while (checkRow >= 1 && checkRow <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, myCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, myCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, myCol), null));
+                break;
+            } else {
                 break;
             }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-                break;
-            }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currRow++;
+            checkRow++;
         }
 
-
-        currRow = myPosition.getRow() - 1;
-        currCol = myPosition.getColumn();
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
-        // down: same column, row--
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+        // down
+        checkRow = myRow - 1;
+        while (checkRow >= 1 && checkRow <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, myCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, myCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, myCol), null));
+                break;
+            } else {
                 break;
             }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-                break;
-            }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currRow--;
+            checkRow--;
         }
 
-
-        currRow = myPosition.getRow();
-        currCol = myPosition.getColumn() - 1;
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
-        // left: same row, col--
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+        // left
+        int checkCol = myCol - 1;
+        while (checkCol >= 1 && checkCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(myRow, checkCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow, checkCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow, checkCol), null));
+                break;
+            } else {
                 break;
             }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-                break;
-            }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currCol--;
+            checkCol--;
         }
 
-
-        currRow = myPosition.getRow();
-        currCol = myPosition.getColumn() + 1;
-        if (currRow - 1 >= 0 && currRow - 1 <= 7 && currCol - 1 >= 0 && currCol - 1 <= 7) {
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-        }
-        // right: same row, col++
-        while((currRow - 1 >= 0) && (currRow - 1 <= 7) && (currCol - 1 >= 0) && (currCol - 1 <= 7)
-                && ((currPiece == null) || (currPiece.getTeamColor() != myColor))) {
-
-            currPiece = board.getPiece(new ChessPosition(currRow, currCol));
-
-            if (currPiece != null && currPiece.getTeamColor() == myColor) {
+        // right
+        checkCol = myCol + 1;
+        while (checkCol >= 1 && checkCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(myRow, checkCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow, checkCol), null));
+            } else if (checkPiece.getTeamColor() != myPiece.getTeamColor()){
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow, checkCol), null));
+                break;
+            } else {
                 break;
             }
-            if (currPiece != null && currPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-                break;
-            }
-
-            moves.add(new ChessMove(myPosition, new ChessPosition(currRow, currCol), null));
-
-            currCol++;
+            checkCol++;
         }
 
         return moves;

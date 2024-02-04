@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ChessMove {
 
     private final ChessPosition startPosition;
-    private final ChessPosition endPosition;
+   private final ChessPosition endPosition;
     private final ChessPiece.PieceType promotionPiece;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
@@ -46,32 +46,25 @@ public class ChessMove {
     }
 
     @Override
-    public String toString() {
-        if (this.promotionPiece != null) {
-            return "{" + this.startPosition.toString() + "->" + this.endPosition.toString() + " (" + this.promotionPiece + ")}";
-        }
-        return "{" + this.startPosition.toString() + "->" + this.endPosition.toString() + "}";
-    }
-
-    @Override
-    public boolean equals(Object otherObj) {
-        if (otherObj == null) {
-            return false;
-        }
-        if (otherObj == this) {
-            return true;
-        }
-        if (otherObj.getClass() != this.getClass()) {
-            return false;
-        }
-
-        ChessMove otherMove = (ChessMove) otherObj;
-        return (this.startPosition.equals(otherMove.startPosition)) && (this.endPosition.equals(otherMove.endPosition)) &&
-                (this.promotionPiece == otherMove.promotionPiece);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessMove chessMove = (ChessMove) o;
+        return this.startPosition.equals(chessMove.startPosition)
+                && this.endPosition.equals(chessMove.endPosition) && this.promotionPiece == chessMove.promotionPiece;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(startPosition, endPosition, promotionPiece);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessMove{" +
+                "startPosition=" + startPosition +
+                ", endPosition=" + endPosition +
+                ", promotionPiece=" + promotionPiece +
+                '}';
     }
 }

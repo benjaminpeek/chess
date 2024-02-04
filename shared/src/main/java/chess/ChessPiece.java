@@ -1,9 +1,7 @@
 package chess;
-import chess.KingMoveCalculator;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -16,8 +14,8 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
 
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
     }
@@ -28,9 +26,9 @@ public class ChessPiece {
     public enum PieceType {
         KING,
         QUEEN,
-        ROOK,
         BISHOP,
         KNIGHT,
+        ROOK,
         PAWN
     }
 
@@ -56,24 +54,22 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        // switch on type of piece we are, instantiate moveCalculator as appropriate calculator, then at the end call
-        // pieceMoves on the move calculator
         PieceMoveCalculator moveCalculator = null;
         switch (this.type) {
             case KING -> {
                 moveCalculator = new KingMoveCalculator();
             }
-            case QUEEN -> {
-                moveCalculator = new QueenMoveCalculator();
-            }
-            case ROOK -> {
-                moveCalculator = new RookMoveCalculator();
+            case KNIGHT -> {
+                moveCalculator = new KnightMoveCalculator();
             }
             case BISHOP -> {
                 moveCalculator = new BishopMoveCalculator();
             }
-            case KNIGHT -> {
-                moveCalculator = new KnightMoveCalculator();
+            case ROOK -> {
+                moveCalculator = new RookMoveCalculator();
+            }
+            case QUEEN -> {
+                moveCalculator = new QueenMoveCalculator();
             }
             case PAWN -> {
                 moveCalculator = new PawnMoveCalculator();
@@ -85,62 +81,83 @@ public class ChessPiece {
     }
 
     @Override
-    public boolean equals(Object otherObj) {
-        if (otherObj == null) {
-            return false;
-        }
-        if (otherObj == this) {
-            return true;
-        }
-        if (otherObj.getClass() != this.getClass()) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return this.pieceColor == that.pieceColor && this.type == that.type;
+    }
 
-        ChessPiece otherPiece = (ChessPiece)otherObj;
-        return (otherPiece.pieceColor == this.pieceColor) && (otherPiece.type == this.type);
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
     }
 
     @Override
     public String toString() {
+        String str = "";
         switch (this.type) {
             case KING -> {
                 switch (this.pieceColor) {
-                    case WHITE -> {return "K";}
-                    case BLACK -> {return "k";}
-                }
-            }
-            case QUEEN -> {
-                switch (this.pieceColor) {
-                    case WHITE -> {return "Q";}
-                    case BLACK -> {return "q";}
-                }
-            }
-            case ROOK -> {
-                switch (this.pieceColor) {
-                    case WHITE -> {return "R";}
-                    case BLACK -> {return "r";}
-                }
-            }
-            case BISHOP -> {
-                switch (this.pieceColor) {
-                    case WHITE -> {return "B";}
-                    case BLACK -> {return "b";}
-                }
-            }
-            case KNIGHT -> {
-                switch (this.pieceColor) {
-                    case WHITE -> {return "N";}
-                    case BLACK -> {return "n";}
+                    case BLACK -> {
+                        str = "k";
+                    }
+                    case WHITE -> {
+                        str = "K";
+                    }
                 }
             }
             case PAWN -> {
                 switch (this.pieceColor) {
-                    case WHITE -> {return "P";}
-                    case BLACK -> {return "p";}
+                    case BLACK -> {
+                        str = "p";
+                    }
+                    case WHITE -> {
+                        str = "P";
+                    }
+                }
+            }
+            case ROOK -> {
+                switch (this.pieceColor) {
+                    case BLACK -> {
+                        str = "r";
+                    }
+                    case WHITE -> {
+                        str = "R";
+                    }
+                }
+            }
+            case QUEEN -> {
+                switch (this.pieceColor) {
+                    case BLACK -> {
+                        str = "q";
+                    }
+                    case WHITE -> {
+                        str = "Q";
+                    }
+                }
+            }
+            case BISHOP -> {
+                switch (this.pieceColor) {
+                    case BLACK -> {
+                        str = "b";
+                    }
+                    case WHITE -> {
+                        str = "B";
+                    }
+                }
+            }
+            case KNIGHT -> {
+                switch (this.pieceColor) {
+                    case BLACK -> {
+                        str = "n";
+                    }
+                    case WHITE -> {
+                        str = "N";
+                    }
                 }
             }
         }
-
-        return "no_piece_found";
+        return str;
     }
 }
