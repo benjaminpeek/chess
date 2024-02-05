@@ -175,14 +175,14 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        // this team's king is in check, and none of the pieces have any valid moves
-        HashSet<ChessMove> allMoves = teamMoves(teamColor);
-        HashSet<ChessMove> allValidMoves = new HashSet<>();
-        for(ChessMove move : allMoves) {
-            allValidMoves.addAll(validMoves(move.getStartPosition()));
-        }
+//        // this team's king is in check, and none of the pieces have any valid moves
+//        HashSet<ChessMove> allMoves = teamMoves(teamColor);
+//        HashSet<ChessMove> allValidMoves = new HashSet<>();
+//        for(ChessMove move : allMoves) {
+//            allValidMoves.addAll(validMoves(move.getStartPosition()));
+//        }
 
-        return isInCheck(teamColor) && allValidMoves.isEmpty();
+        return isInCheck(teamColor) && isInStalemate(teamColor);
     }
 
     /**
@@ -193,7 +193,12 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        HashSet<ChessMove> allMoves = teamMoves(teamColor);
+        HashSet<ChessMove> allValidMoves = new HashSet<>();
+        for(ChessMove move : allMoves) {
+            allValidMoves.addAll(validMoves(move.getStartPosition()));
+        }
+        return allValidMoves.isEmpty();
     }
 
     /**
