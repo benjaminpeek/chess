@@ -87,7 +87,7 @@ public class ChessGame {
         if (validMoves.isEmpty()) {throw new InvalidMoveException();}
         if (validMoves.contains(move)) {
             ChessPiece piece = this.getBoard().getPiece(move.getStartPosition());
-            // move piece to the new position
+            // move piece to the new position, promote if necessary
             if (move.getPromotionPiece() != null) {
                 this.getBoard().addPiece(move.getEndPosition(), new ChessPiece(this.getTeamTurn(), move.getPromotionPiece()));
             } else {
