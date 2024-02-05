@@ -88,7 +88,11 @@ public class ChessGame {
         if (validMoves.contains(move)) {
             ChessPiece piece = this.getBoard().getPiece(move.getStartPosition());
             // move piece to the new position
-            this.getBoard().addPiece(move.getEndPosition(), piece);
+            if (move.getPromotionPiece() != null) {
+                this.getBoard().addPiece(move.getEndPosition(), new ChessPiece(this.getTeamTurn(), move.getPromotionPiece()));
+            } else {
+                this.getBoard().addPiece(move.getEndPosition(), piece);
+            }
             // make the piece's old position null
             this.getBoard().addPiece(move.getStartPosition(), null);
             // change the teamTurn
