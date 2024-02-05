@@ -84,7 +84,9 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         HashSet<ChessMove> validMoves = (HashSet<ChessMove>) validMoves(move.getStartPosition());
-        if (validMoves.isEmpty()) {throw new InvalidMoveException();}
+        if (validMoves.isEmpty()) {
+            throw new InvalidMoveException();
+        }
         if (validMoves.contains(move)) {
             ChessPiece piece = this.getBoard().getPiece(move.getStartPosition());
             // move piece to the new position, promote if necessary
