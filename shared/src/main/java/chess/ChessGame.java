@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -10,15 +11,22 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    private TeamColor teamTurn;
+    private ChessBoard board;
 
+    // helper variable to undo simulated moves
+    private ChessPiece takenPiece;
+
+    public ChessGame() {
+        teamTurn = TeamColor.WHITE;
+        board = new ChessBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return this.teamTurn;
     }
 
     /**
@@ -27,7 +35,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.teamTurn = team;
     }
 
     /**
@@ -46,7 +54,22 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = this.getBoard().getPiece(startPosition);
+        if (piece == null) {return null;}
+        if (piece.getTeamColor() != this.getTeamTurn()) {return null;}
+        HashSet<ChessMove> possibleMoves = (HashSet<ChessMove>)piece.pieceMoves(this.getBoard(), startPosition);
+
+        for (ChessMove move : possibleMoves) {
+            // simulate the move
+            simulateMove(move);
+            // if the simulated move left the king in check, undo it. otherwise, consider it valid
+            if (isInCheck(this.getTeamTurn())) {
+                undoMove(move);
+            } else {
+                possibleMoves.add(move);
+            }
+        }
+        return possibleMoves;
     }
 
     /**
@@ -56,7 +79,49 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        HashSet<ChessMove> validMoves = (HashSet<ChessMove>) validMoves(move.getStartPosition());
+        if (validMoves.contains(move)) {
+            ChessPiece piece = this.getBoard().getPiece(move.getStartPosition());
+            // move piece to the new position
+            this.getBoard().addPiece(move.getEndPosition(), piece);
+            // make the piece's old position null
+            this.getBoard().addPiece(move.getStartPosition(), null);
+            // change the teamTurn
+            if (this.getTeamTurn() == TeamColor.WHITE) {
+                this.setTeamTurn(TeamColor.BLACK);
+            } else {
+                this.setTeamTurn(TeamColor.WHITE);
+            }
+        } else {
+            throw new InvalidMoveException();
+        }
+    }
+
+    /**
+     * Helper method to simulate a move whether it is valid or not
+     *
+     * @param move - the ChessMove to simulate
+     */
+    private void simulateMove(ChessMove move) {
+        ChessPiece piece = this.getBoard().getPiece(move.getStartPosition());
+        this.takenPiece = this.getBoard().getPiece(move.getEndPosition());
+        // move piece to the new position
+        this.getBoard().addPiece(move.getEndPosition(), piece);
+        // make the piece's old position null
+        this.getBoard().addPiece(move.getStartPosition(), null);
+    }
+
+    /**
+     * Helper method to undo a simulated move
+     *
+     * @param move - the ChessMove to undo
+     */
+    private void undoMove(ChessMove move) {
+        ChessPiece movedPiece = this.getBoard().getPiece(move.getEndPosition());
+        // put the moved piece back to its start position
+        this.getBoard().addPiece(move.getStartPosition(), movedPiece);
+        // put the taken piece back where it was
+        this.getBoard().addPiece(move.getEndPosition(), this.takenPiece);
     }
 
     /**
@@ -66,7 +131,32 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // first find the position of the current team's king
+        ChessPosition kingPosition = null;
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(i, j));
+                if (checkPiece != null && checkPiece.getTeamColor() == teamColor
+                        && checkPiece.getPieceType() == ChessPiece.PieceType.KING) {
+                    kingPosition = new ChessPosition(i, j);
+                }
+            }
+        }
+        // now find all the opponent pieces and call pieceMoves on them, collecting all opponent moves
+        HashSet<ChessMove> opponentMoves;
+        if(teamColor == TeamColor.WHITE) {
+            opponentMoves = teamMoves(TeamColor.BLACK);
+        } else {
+            opponentMoves = teamMoves(TeamColor.WHITE);
+        }
+
+        // check if the king's position appears in them as an end position
+        for (ChessMove move : opponentMoves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -96,7 +186,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +195,25 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return this.board;
+    }
+
+    /**
+     * Helper method that finds all the moves that a team can make, valid or not
+     *
+     * @param teamColor - the team whose moves to collect
+     * @return - the total collection of all moves the team passed in can make
+     */
+    private HashSet<ChessMove> teamMoves(TeamColor teamColor) {
+        HashSet<ChessMove> moves = new HashSet<>();
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(i, j));
+                if (checkPiece != null && checkPiece.getTeamColor() == teamColor) {
+                    moves.addAll(checkPiece.pieceMoves(this.board, new ChessPosition(i, j)));
+                }
+            }
+        }
+        return moves;
     }
 }
