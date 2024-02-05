@@ -175,13 +175,6 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-//        // this team's king is in check, and none of the pieces have any valid moves
-//        HashSet<ChessMove> allMoves = teamMoves(teamColor);
-//        HashSet<ChessMove> allValidMoves = new HashSet<>();
-//        for(ChessMove move : allMoves) {
-//            allValidMoves.addAll(validMoves(move.getStartPosition()));
-//        }
-
         return isInCheck(teamColor) && isInStalemate(teamColor);
     }
 
