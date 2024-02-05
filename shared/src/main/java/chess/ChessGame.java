@@ -55,7 +55,7 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = this.getBoard().getPiece(startPosition);
-        if (piece == null || piece.getTeamColor() != this.getTeamTurn()) {
+        if (piece == null) {
             return new HashSet<>();
         }
         HashSet<ChessMove> possibleMoves = (HashSet<ChessMove>)piece.pieceMoves(this.getBoard(), startPosition);
@@ -65,7 +65,7 @@ public class ChessGame {
             // simulate the move
             simulateMove(move);
             // if the simulated move has not left the king in check, consider it valid
-            if (!isInCheck(this.getTeamTurn())) {
+            if (!isInCheck(piece.getTeamColor())) {
                 viableMoves.add(move);
             }
             undoMove(move);
@@ -80,6 +80,9 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (board.getPiece(move.getStartPosition()).getTeamColor() != this.getTeamTurn()) {
+            throw new InvalidMoveException();
+        }
         HashSet<ChessMove> validMoves = (HashSet<ChessMove>) validMoves(move.getStartPosition());
         if (validMoves.isEmpty()) {throw new InvalidMoveException();}
         if (validMoves.contains(move)) {
