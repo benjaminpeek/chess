@@ -55,21 +55,22 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = this.getBoard().getPiece(startPosition);
-        if (piece == null) {return null;}
-        if (piece.getTeamColor() != this.getTeamTurn()) {return null;}
+        if (piece == null || piece.getTeamColor() != this.getTeamTurn()) {
+            return new HashSet<>();
+        }
         HashSet<ChessMove> possibleMoves = (HashSet<ChessMove>)piece.pieceMoves(this.getBoard(), startPosition);
 
+        HashSet<ChessMove> viableMoves = new HashSet<>();
         for (ChessMove move : possibleMoves) {
             // simulate the move
             simulateMove(move);
-            // if the simulated move left the king in check, undo it. otherwise, consider it valid
-            if (isInCheck(this.getTeamTurn())) {
-                undoMove(move);
-            } else {
-                possibleMoves.add(move);
+            // if the simulated move has not left the king in check, consider it valid
+            if (!isInCheck(this.getTeamTurn())) {
+                viableMoves.add(move);
             }
+            undoMove(move);
         }
-        return possibleMoves;
+        return viableMoves;
     }
 
     /**
@@ -80,6 +81,7 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         HashSet<ChessMove> validMoves = (HashSet<ChessMove>) validMoves(move.getStartPosition());
+        if (validMoves.isEmpty()) {throw new InvalidMoveException();}
         if (validMoves.contains(move)) {
             ChessPiece piece = this.getBoard().getPiece(move.getStartPosition());
             // move piece to the new position
@@ -150,7 +152,7 @@ public class ChessGame {
             opponentMoves = teamMoves(TeamColor.WHITE);
         }
 
-        // check if the king's position appears in them as an end position
+        // check if the king's position appears in any of them as an end position
         for (ChessMove move : opponentMoves) {
             if (move.getEndPosition().equals(kingPosition)) {
                 return true;
