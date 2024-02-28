@@ -1,5 +1,7 @@
 package chess;
 
+import chess.calculators.*;
+
 import java.util.Collection;
 import java.util.Objects;
 
@@ -56,24 +58,12 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         PieceMoveCalculator moveCalculator = null;
         switch (this.type) {
-            case KING -> {
-                moveCalculator = new KingMoveCalculator();
-            }
-            case KNIGHT -> {
-                moveCalculator = new KnightMoveCalculator();
-            }
-            case BISHOP -> {
-                moveCalculator = new BishopMoveCalculator();
-            }
-            case ROOK -> {
-                moveCalculator = new RookMoveCalculator();
-            }
-            case QUEEN -> {
-                moveCalculator = new QueenMoveCalculator();
-            }
-            case PAWN -> {
-                moveCalculator = new PawnMoveCalculator();
-            }
+            case KING -> moveCalculator = new KingMoveCalculator();
+            case KNIGHT -> moveCalculator = new KnightMoveCalculator();
+            case BISHOP -> moveCalculator = new BishopMoveCalculator();
+            case ROOK -> moveCalculator = new RookMoveCalculator();
+            case QUEEN -> moveCalculator = new QueenMoveCalculator();
+            case PAWN -> moveCalculator = new PawnMoveCalculator();
         }
 
         assert moveCalculator != null;
@@ -99,62 +89,38 @@ public class ChessPiece {
         switch (this.type) {
             case KING -> {
                 switch (this.pieceColor) {
-                    case BLACK -> {
-                        str = "k";
-                    }
-                    case WHITE -> {
-                        str = "K";
-                    }
+                    case BLACK -> str = "k";
+                    case WHITE -> str = "K";
                 }
             }
             case PAWN -> {
                 switch (this.pieceColor) {
-                    case BLACK -> {
-                        str = "p";
-                    }
-                    case WHITE -> {
-                        str = "P";
-                    }
+                    case BLACK -> str = "p";
+                    case WHITE -> str = "P";
                 }
             }
             case ROOK -> {
                 switch (this.pieceColor) {
-                    case BLACK -> {
-                        str = "r";
-                    }
-                    case WHITE -> {
-                        str = "R";
-                    }
+                    case BLACK -> str = "r";
+                    case WHITE -> str = "R";
                 }
             }
             case QUEEN -> {
                 switch (this.pieceColor) {
-                    case BLACK -> {
-                        str = "q";
-                    }
-                    case WHITE -> {
-                        str = "Q";
-                    }
+                    case BLACK -> str = "q";
+                    case WHITE -> str = "Q";
                 }
             }
             case BISHOP -> {
                 switch (this.pieceColor) {
-                    case BLACK -> {
-                        str = "b";
-                    }
-                    case WHITE -> {
-                        str = "B";
-                    }
+                    case BLACK -> str = "b";
+                    case WHITE -> str = "B";
                 }
             }
             case KNIGHT -> {
                 switch (this.pieceColor) {
-                    case BLACK -> {
-                        str = "n";
-                    }
-                    case WHITE -> {
-                        str = "N";
-                    }
+                    case BLACK -> str = "n";
+                    case WHITE -> str = "N";
                 }
             }
         }
