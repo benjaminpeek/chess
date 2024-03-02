@@ -1,6 +1,5 @@
 package dataAccess;
 
-import model.AuthData;
 import model.GameData;
 
 import java.util.Collection;
