@@ -3,6 +3,7 @@ package dataAccess.memoryDataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.UserDataAccess;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 
 public class MemoryUserDataAccess implements UserDataAccess {
     @Override
@@ -12,6 +13,6 @@ public class MemoryUserDataAccess implements UserDataAccess {
 
     @Override
     public void createUser(UserData userData) throws DataAccessException {
-
+        UserData newUser = new UserData(userData.username(), userData.password(), userData.email());
     }
 }
