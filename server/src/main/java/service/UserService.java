@@ -1,7 +1,7 @@
 package service;
 
 public class UserService {
-    // register(username, password, email7)
+    // register()
     // login()
     // logout()
 }
