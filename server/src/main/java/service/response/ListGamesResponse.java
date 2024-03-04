@@ -1,27 +1,30 @@
 package service.response;
 
+import model.GameData;
+
+import java.util.Collection;
 import java.util.Objects;
 
-public record ClearResponse(
-        String message
+public record ListGamesResponse(
+        Collection<GameData> games
 ) {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClearResponse that = (ClearResponse) o;
-        return Objects.equals(message, that.message);
+        ListGamesResponse that = (ListGamesResponse) o;
+        return Objects.equals(games, that.games);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(message);
+        return Objects.hash(games);
     }
 
     @Override
     public String toString() {
-        return "ClearResponse{" +
-                "message='" + message + '\'' +
+        return "ListGamesResponse{" +
+                "games=" + games +
                 '}';
     }
 }

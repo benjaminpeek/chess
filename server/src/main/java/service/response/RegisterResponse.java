@@ -2,7 +2,7 @@ package service.response;
 
 import java.util.Objects;
 
-public record UserResponse(
+public record RegisterResponse(
         String username,
         String authToken
 ) {
@@ -10,7 +10,7 @@ public record UserResponse(
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserResponse that = (UserResponse) o;
+        RegisterResponse that = (RegisterResponse) o;
         return Objects.equals(username, that.username) && Objects.equals(authToken, that.authToken);
     }
 
@@ -21,7 +21,7 @@ public record UserResponse(
 
     @Override
     public String toString() {
-        return "UserResponse{" +
+        return "RegisterResponse{" +
                 "username='" + username + '\'' +
                 ", authToken='" + authToken + '\'' +
                 '}';
