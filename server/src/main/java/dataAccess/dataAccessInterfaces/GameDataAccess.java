@@ -1,5 +1,6 @@
-package dataAccess;
+package dataAccess.dataAccessInterfaces;
 
+import dataAccess.DataAccessException;
 import model.GameData;
 
 import java.util.Collection;

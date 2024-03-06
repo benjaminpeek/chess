@@ -1,7 +1,7 @@
 package dataAccess.memoryDataAccess;
 
 import dataAccess.DataAccessException;
-import dataAccess.GameDataAccess;
+import dataAccess.dataAccessInterfaces.GameDataAccess;
 import model.GameData;
 
 import java.util.Collection;

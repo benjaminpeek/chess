@@ -1,4 +1,6 @@
-package dataAccess;
+package dataAccess.dataAccessInterfaces;
+
+import dataAccess.DataAccessException;
 
 public interface AuthDataAccess {
     void createAuth(String username) throws DataAccessException;

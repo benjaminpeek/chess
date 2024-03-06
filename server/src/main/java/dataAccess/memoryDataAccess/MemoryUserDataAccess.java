@@ -1,9 +1,8 @@
 package dataAccess.memoryDataAccess;
 
 import dataAccess.DataAccessException;
-import dataAccess.UserDataAccess;
+import dataAccess.dataAccessInterfaces.UserDataAccess;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 
 public class MemoryUserDataAccess implements UserDataAccess {
     @Override
