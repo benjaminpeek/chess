@@ -1,4 +1,4 @@
-package service.response;
+package server.response;
 
 import model.GameData;
 

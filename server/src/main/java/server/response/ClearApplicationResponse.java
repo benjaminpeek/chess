@@ -1,15 +1,15 @@
-package service.response;
+package server.response;
 
 import java.util.Objects;
 
-public record LogoutResponse(
+public record ClearApplicationResponse(
         String message
 ) {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LogoutResponse that = (LogoutResponse) o;
+        ClearApplicationResponse that = (ClearApplicationResponse) o;
         return Objects.equals(message, that.message);
     }
 
@@ -20,7 +20,7 @@ public record LogoutResponse(
 
     @Override
     public String toString() {
-        return "LogoutResponse{" +
+        return "ClearApplicationResponse{" +
                 "message='" + message + '\'' +
                 '}';
     }

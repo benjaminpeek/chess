@@ -1,27 +1,27 @@
-package service.response;
+package server.response;
 
 import java.util.Objects;
 
-public record CreateGameResponse(
-        int gameID
+public record JoinGameResponse(
+        String message
 ) {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CreateGameResponse that = (CreateGameResponse) o;
-        return gameID == that.gameID;
+        JoinGameResponse that = (JoinGameResponse) o;
+        return Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameID);
+        return Objects.hash(message);
     }
 
     @Override
     public String toString() {
-        return "CreateGameResponse{" +
-                "gameID=" + gameID +
+        return "JoinGameResponse{" +
+                "message='" + message + '\'' +
                 '}';
     }
 }

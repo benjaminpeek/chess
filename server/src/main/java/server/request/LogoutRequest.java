@@ -1,15 +1,15 @@
-package service.request;
+package server.request;
 
 import java.util.Objects;
 
-public record ListGamesRequest(
+public record LogoutRequest(
         String authToken
 ) {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ListGamesRequest that = (ListGamesRequest) o;
+        LogoutRequest that = (LogoutRequest) o;
         return Objects.equals(authToken, that.authToken);
     }
 
@@ -20,7 +20,7 @@ public record ListGamesRequest(
 
     @Override
     public String toString() {
-        return "ListGamesRequest{" +
+        return "LogoutRequest{" +
                 "authToken='" + authToken + '\'' +
                 '}';
     }

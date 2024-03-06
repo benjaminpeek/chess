@@ -1,27 +1,27 @@
-package service.request;
+package server.response;
 
 import java.util.Objects;
 
-public record LogoutRequest(
-        String authToken
+public record LogoutResponse(
+        String message
 ) {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LogoutRequest that = (LogoutRequest) o;
-        return Objects.equals(authToken, that.authToken);
+        LogoutResponse that = (LogoutResponse) o;
+        return Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(authToken);
+        return Objects.hash(message);
     }
 
     @Override
     public String toString() {
-        return "LogoutRequest{" +
-                "authToken='" + authToken + '\'' +
+        return "LogoutResponse{" +
+                "message='" + message + '\'' +
                 '}';
     }
 }
