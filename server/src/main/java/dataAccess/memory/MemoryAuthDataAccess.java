@@ -1,6 +1,6 @@
-package dataAccess.memoryDataAccess;
+package dataAccess.memory;
 
-import dataAccess.dataAccessInterfaces.AuthDataAccess;
+import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.DataAccessException;
 import model.AuthData;
 

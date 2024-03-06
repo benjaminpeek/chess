@@ -1,7 +1,7 @@
-package dataAccess.memoryDataAccess;
+package dataAccess.memory;
 
 import dataAccess.DataAccessException;
-import dataAccess.dataAccessInterfaces.UserDataAccess;
+import dataAccess.interfaces.UserDataAccess;
 import model.UserData;
 
 public class MemoryUserDataAccess implements UserDataAccess {
