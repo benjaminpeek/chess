@@ -2,6 +2,6 @@ package service;
 
 public class GameService {
     // listGames()
-    // createGame()
+    // createGame(String authToken, String gameName)
     // joinGame()
 }
