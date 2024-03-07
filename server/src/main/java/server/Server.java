@@ -16,10 +16,8 @@ public class Server {
         // prepare the necessary data access objects
         MemoryUserDataAccess userDataAccess = new MemoryUserDataAccess();
         MemoryAuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        // prepare the services
-        UserService userService = new UserService(userDataAccess, authDataAccess);
         // prepare the handlers
-        UserHandler userHandler = new UserHandler(userService);
+        UserHandler userHandler = new UserHandler(userDataAccess, authDataAccess);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", userHandler::registerHandler);
