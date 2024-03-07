@@ -17,7 +17,6 @@ public class UserService {
         this.authDataAccess = authDataAccess;
     }
 
-    // the service accesses the data, from our memory access classes
     public RegisterResponse registerService(RegisterRequest request) throws AlreadyTakenException, BadRequestException {
         if (this.userDataAccess.getUser(request.username()) != null) {
             throw new AlreadyTakenException("Error: already taken");
