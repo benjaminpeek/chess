@@ -4,6 +4,7 @@ import dataAccess.DataAccessException;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import request.RegisterRequest;
+import response.RegisterResponse;
 
 public class UserService {
     MemoryUserDataAccess userDataAccess;
@@ -15,7 +16,7 @@ public class UserService {
     }
 
     // the service accesses the data, from our memory access classes
-    public void register(RegisterRequest request) throws DataAccessException {
+    public RegisterResponse register(RegisterRequest request) throws DataAccessException {
         if (this.userDataAccess.getUser(request.username()) != null) {
             throw new DataAccessException("Error: already taken");
         }
@@ -24,7 +25,9 @@ public class UserService {
         }
 
         userDataAccess.createUser(request.username(), request.password(), request.email());
-        authDataAccess.createAuth(request.username());
+        String authToken = authDataAccess.createAuth(request.username());
+
+        return new RegisterResponse(request.username(), authToken);
     }
     // login()
     // logout()

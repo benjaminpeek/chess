@@ -11,9 +11,11 @@ public class MemoryAuthDataAccess implements AuthDataAccess {
     Map<String, AuthData> authDataMap = new HashMap<>();
 
     @Override
-    public void createAuth(String username) {
-        String newAuthToken = UUID.randomUUID().toString();
-        authDataMap.put(newAuthToken, new AuthData(newAuthToken, username));
+    public String createAuth(String username) {
+        String authToken = UUID.randomUUID().toString();
+        authDataMap.put(authToken, new AuthData(authToken, username));
+
+        return authToken;
     }
 
     @Override
