@@ -16,7 +16,7 @@ public class UserService {
     }
 
     // the service accesses the data, from our memory access classes
-    public RegisterResponse register(RegisterRequest request) throws DataAccessException {
+    public RegisterResponse registerService(RegisterRequest request) throws DataAccessException {
         if (this.userDataAccess.getUser(request.username()) != null) {
             throw new DataAccessException("Error: already taken");
         }
@@ -29,6 +29,8 @@ public class UserService {
 
         return new RegisterResponse(request.username(), authToken);
     }
-    // login()
-    // logout()
+
+    // loginService()
+
+    // logoutService()
 }

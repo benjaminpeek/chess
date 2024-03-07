@@ -1,10 +1,13 @@
 package handlers;
 
-import request.RegisterRequest;
 import response.RegisterResponse;
+import com.google.gson.Gson;
+import spark.*;
 
 public class UserHandler {
-//    RegisterResponse registerHandler() {
-//
-//    }
+    public RegisterResponse registerHandler(Request req, Response res) {
+
+
+        return new RegisterResponse("hi", "mo"); // temp
+    }
 }

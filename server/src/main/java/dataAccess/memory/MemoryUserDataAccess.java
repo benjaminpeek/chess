@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryUserDataAccess implements UserDataAccess {
-    Map<String, UserData> userDataMap = new HashMap<>();
+    private final Map<String, UserData> userDataMap = new HashMap<>();
 
     @Override
     public UserData getUser(String username) {

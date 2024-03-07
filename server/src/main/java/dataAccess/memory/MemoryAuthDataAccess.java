@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MemoryAuthDataAccess implements AuthDataAccess {
-    Map<String, AuthData> authDataMap = new HashMap<>();
+    private final Map<String, AuthData> authDataMap = new HashMap<>();
 
     @Override
     public String createAuth(String username) {
@@ -21,5 +21,10 @@ public class MemoryAuthDataAccess implements AuthDataAccess {
     @Override
     public void deleteAuth(String authToken) {
         authDataMap.remove(authToken);
+    }
+
+    @Override
+    public String getAuth(String authToken) {
+        return authDataMap.get(authToken).authToken();
     }
 }
