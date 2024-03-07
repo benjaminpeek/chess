@@ -3,6 +3,8 @@ package service;
 import dataAccess.DataAccessException;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
+import exceptions.AlreadyTakenException;
+import exceptions.BadRequestException;
 import request.RegisterRequest;
 import response.RegisterResponse;
 
@@ -16,12 +18,12 @@ public class UserService {
     }
 
     // the service accesses the data, from our memory access classes
-    public RegisterResponse registerService(RegisterRequest request) throws DataAccessException {
+    public RegisterResponse registerService(RegisterRequest request) throws AlreadyTakenException, BadRequestException {
         if (this.userDataAccess.getUser(request.username()) != null) {
-            throw new DataAccessException("Error: already taken");
+            throw new AlreadyTakenException("Error: already taken");
         }
         if (request.username() == null || request.password() == null || request.email() == null) {
-            throw new DataAccessException("Error: bad request");
+            throw new BadRequestException("Error: bad request");
         }
 
         userDataAccess.createUser(request.username(), request.password(), request.email());

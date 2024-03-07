@@ -4,11 +4,15 @@ import com.google.gson.JsonSyntaxException;
 import dataAccess.DataAccessException;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
+import exceptions.AlreadyTakenException;
+import exceptions.BadRequestException;
 import request.RegisterRequest;
 import response.RegisterResponse;
 import com.google.gson.Gson;
 import service.UserService;
 import spark.*;
+
+import java.util.Map;
 
 public class UserHandler {
     private final MemoryUserDataAccess userDataAccess;
@@ -30,10 +34,12 @@ public class UserHandler {
             // convert the service response to json for the res body
             res.status(200);
             return new Gson().toJson(registerResponse);
-        } catch (JsonSyntaxException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+        } catch (AlreadyTakenException e) {
+            res.status(403);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        } catch (BadRequestException e) {
+            res.status(400);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
         }
     }
 }
