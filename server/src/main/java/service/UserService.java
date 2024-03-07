@@ -1,6 +1,5 @@
 package service;
 
-import dataAccess.DataAccessException;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
