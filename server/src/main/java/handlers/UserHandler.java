@@ -1,7 +1,5 @@
 package handlers;
 
-import com.google.gson.JsonSyntaxException;
-import dataAccess.DataAccessException;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;

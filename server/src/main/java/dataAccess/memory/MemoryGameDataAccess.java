@@ -2,10 +2,14 @@ package dataAccess.memory;
 
 import dataAccess.interfaces.GameDataAccess;
 import model.GameData;
+import model.UserData;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MemoryGameDataAccess implements GameDataAccess {
+    private final Map<Integer, GameData> gameDataMap = new HashMap<>();
     @Override
     public Collection<GameData> listGames(String authToken) {
         return null;
