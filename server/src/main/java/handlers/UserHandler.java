@@ -4,7 +4,10 @@ import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
+import exceptions.UnauthorizedException;
+import request.LoginRequest;
 import request.RegisterRequest;
+import response.LoginResponse;
 import response.RegisterResponse;
 import com.google.gson.Gson;
 import service.UserService;
@@ -15,10 +18,12 @@ import java.util.Map;
 public class UserHandler {
     private final MemoryUserDataAccess userDataAccess;
     private final MemoryAuthDataAccess authDataAccess;
+    //private final UserService userService; ????????????????????????????????????
 
     public UserHandler(MemoryUserDataAccess userDataAccess, MemoryAuthDataAccess authDataAccess) {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
+        //this.userService = userService; ????????????????????????????????????
     }
 
     public String registerHandler(Request req, Response res) {
@@ -37,6 +42,21 @@ public class UserHandler {
             return new Gson().toJson(Map.of("message", e.getMessage()));
         } catch (BadRequestException e) {
             res.status(400);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
+        }
+    }
+
+    public String loginHandler(Request req, Response res) {
+        try {
+            UserService userService = new UserService(this.userDataAccess, this.authDataAccess);
+
+            LoginRequest loginRequest = new Gson().fromJson(req.body(), LoginRequest.class);
+            LoginResponse loginResponse = userService.loginService(loginRequest);
+
+            res.status(200);
+            return new Gson().toJson(loginResponse);
+        } catch (UnauthorizedException e) {
+            res.status(401);
             return new Gson().toJson(Map.of("message", e.getMessage()));
         }
     }

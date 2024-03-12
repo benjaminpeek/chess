@@ -4,7 +4,10 @@ import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
+import exceptions.UnauthorizedException;
+import request.LoginRequest;
 import request.RegisterRequest;
+import response.LoginResponse;
 import response.RegisterResponse;
 
 public class UserService {
@@ -30,7 +33,15 @@ public class UserService {
         return new RegisterResponse(request.username(), authToken);
     }
 
-    // loginService()
+    public LoginResponse loginService(LoginRequest request) throws UnauthorizedException {
+        if (!request.password().equals(this.userDataAccess.getUser(request.username()).password())) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        String authToken = authDataAccess.createAuth(request.username());
+
+        return new LoginResponse(request.username(), authToken);
+    }
 
     // logoutService()
 }
