@@ -36,6 +36,9 @@ public class UserService {
     }
 
     public LoginResponse loginService(LoginRequest request) throws UnauthorizedException, DataAccessException {
+        if (this.userDataAccess.getUser(request.username()) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
         if (!request.password().equals(this.userDataAccess.getUser(request.username()).password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
