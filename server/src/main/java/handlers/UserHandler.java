@@ -1,5 +1,7 @@
 package handlers;
 
+import dataAccess.interfaces.AuthDataAccess;
+import dataAccess.interfaces.UserDataAccess;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
@@ -16,11 +18,11 @@ import spark.*;
 import java.util.Map;
 
 public class UserHandler {
-    private final MemoryUserDataAccess userDataAccess;
-    private final MemoryAuthDataAccess authDataAccess;
+    private final UserDataAccess userDataAccess;
+    private final AuthDataAccess authDataAccess;
     //private final UserService userService; ????????????????????????????????????
 
-    public UserHandler(MemoryUserDataAccess userDataAccess, MemoryAuthDataAccess authDataAccess) {
+    public UserHandler(UserDataAccess userDataAccess, AuthDataAccess authDataAccess) {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
         //this.userService = userService; ????????????????????????????????????

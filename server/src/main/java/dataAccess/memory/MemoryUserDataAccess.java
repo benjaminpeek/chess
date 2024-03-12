@@ -2,7 +2,6 @@ package dataAccess.memory;
 
 import dataAccess.interfaces.UserDataAccess;
 import model.UserData;
-
 import java.util.HashMap;
 import java.util.Map;
 

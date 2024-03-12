@@ -1,5 +1,7 @@
 package service;
 
+import dataAccess.interfaces.AuthDataAccess;
+import dataAccess.interfaces.UserDataAccess;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
@@ -11,10 +13,10 @@ import response.LoginResponse;
 import response.RegisterResponse;
 
 public class UserService {
-    MemoryUserDataAccess userDataAccess;
-    MemoryAuthDataAccess authDataAccess;
+    UserDataAccess userDataAccess;
+    AuthDataAccess authDataAccess;
 
-    public UserService(MemoryUserDataAccess userDataAccess, MemoryAuthDataAccess authDataAccess) {
+    public UserService(UserDataAccess userDataAccess, AuthDataAccess authDataAccess) {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
     }
