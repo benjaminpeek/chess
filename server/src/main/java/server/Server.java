@@ -3,8 +3,6 @@ package server;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import handlers.UserHandler;
-import org.eclipse.jetty.server.Authentication;
-import service.UserService;
 import spark.*;
 
 public class Server {
@@ -24,6 +22,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", userHandler::registerHandler);
+        Spark.post("/session", userHandler::loginHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
