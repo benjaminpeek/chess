@@ -12,8 +12,6 @@ import com.google.gson.Gson;
 import service.UserService;
 import spark.*;
 
-import java.util.Map;
-
 public class UserHandler {
     private final UserService userService;
 
