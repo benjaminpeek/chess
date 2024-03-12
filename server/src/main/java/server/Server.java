@@ -1,11 +1,16 @@
 package server;
 
+import com.google.gson.Gson;
+import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.UserDataAccess;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
+import exceptions.AlreadyTakenException;
 import handlers.UserHandler;
 import spark.*;
+
+import java.util.Map;
 
 public class Server {
 
@@ -25,6 +30,15 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", userHandler::registerHandler);
         Spark.post("/session", userHandler::loginHandler);
+
+        Spark.exception(DataAccessException.class, (e, request, response) -> {
+            response.status(500);
+            response.body(new Gson().toJson(Map.of("message", e.getMessage())));
+        });
+        Spark.exception(AlreadyTakenException.class, (e, request, response) -> {
+            response.status(403);
+            response.body(new Gson().toJson(Map.of("message", e.getMessage())));
+        });
 
         Spark.awaitInitialization();
         return Spark.port();

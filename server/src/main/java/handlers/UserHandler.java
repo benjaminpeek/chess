@@ -1,9 +1,8 @@
 package handlers;
 
+import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.UserDataAccess;
-import dataAccess.memory.MemoryAuthDataAccess;
-import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
@@ -45,10 +44,13 @@ public class UserHandler {
         } catch (BadRequestException e) {
             res.status(400);
             return new Gson().toJson(Map.of("message", e.getMessage()));
+        } catch (DataAccessException e) {
+            res.status(500);
+            return new Gson().toJson(Map.of("message", e.getMessage()));
         }
     }
 
-    public String loginHandler(Request req, Response res) {
+    public String loginHandler(Request req, Response res) throws DataAccessException {
         try {
             UserService userService = new UserService(this.userDataAccess, this.authDataAccess);
 

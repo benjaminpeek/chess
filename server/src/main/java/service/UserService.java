@@ -1,5 +1,6 @@
 package service;
 
+import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.UserDataAccess;
 import dataAccess.memory.MemoryAuthDataAccess;
@@ -21,7 +22,8 @@ public class UserService {
         this.authDataAccess = authDataAccess;
     }
 
-    public RegisterResponse registerService(RegisterRequest request) throws AlreadyTakenException, BadRequestException {
+    public RegisterResponse registerService(RegisterRequest request) throws AlreadyTakenException, BadRequestException,
+            DataAccessException {
         if (this.userDataAccess.getUser(request.username()) != null) {
             throw new AlreadyTakenException("Error: already taken");
         }
@@ -35,7 +37,7 @@ public class UserService {
         return new RegisterResponse(request.username(), authToken);
     }
 
-    public LoginResponse loginService(LoginRequest request) throws UnauthorizedException {
+    public LoginResponse loginService(LoginRequest request) throws UnauthorizedException, DataAccessException {
         if (!request.password().equals(this.userDataAccess.getUser(request.username()).password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
