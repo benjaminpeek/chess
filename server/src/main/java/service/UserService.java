@@ -9,7 +9,9 @@ import exceptions.UnauthorizedException;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.LoginResponse;
+import response.LogoutResponse;
 import response.RegisterResponse;
+
 
 public class UserService {
     UserDataAccess userDataAccess;
@@ -44,9 +46,15 @@ public class UserService {
         }
 
         String authToken = authDataAccess.createAuth(request.username());
-
         return new LoginResponse(request.username(), authToken);
     }
 
-    // logoutService()
+    public LogoutResponse logoutService(String authToken) throws DataAccessException, UnauthorizedException {
+        if (this.authDataAccess.getAuth(authToken) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        this.authDataAccess.deleteAuth(authToken);
+        return new LogoutResponse("logout successful");
+    }
 }

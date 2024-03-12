@@ -44,6 +44,7 @@ public class Server {
         Spark.delete("/db", clearHandler::clearApplicationHandler);
         Spark.post("/user", userHandler::registerHandler);
         Spark.post("/session", userHandler::loginHandler);
+        Spark.delete("/session", userHandler::logoutHandler);
 
         // exceptions
         Spark.exception(DataAccessException.class, (e, request, response) -> {

@@ -7,6 +7,7 @@ import exceptions.UnauthorizedException;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.LoginResponse;
+import response.LogoutResponse;
 import response.RegisterResponse;
 import com.google.gson.Gson;
 import service.UserService;
@@ -37,6 +38,11 @@ public class UserHandler {
         res.status(200);
         return new Gson().toJson(loginResponse);
     }
-}
 
-//return new Gson().toJson(Map.of("message", "Error: <put your error message here")
+    public String logoutHandler(Request req, Response res) throws DataAccessException, UnauthorizedException {
+        LogoutResponse logoutResponse = this.userService.logoutService(req.headers("authorization"));
+
+        res.status(200);
+        return new Gson().toJson(logoutResponse);
+    }
+}

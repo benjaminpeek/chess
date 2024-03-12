@@ -1,6 +1,5 @@
 package dataAccess.memory;
 
-import dataAccess.DataAccessException;
 import dataAccess.interfaces.UserDataAccess;
 import model.UserData;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class MemoryUserDataAccess implements UserDataAccess {
     }
 
     @Override
-    public void clearUsers() throws DataAccessException {
+    public void clearUsers() {
         userDataMap.clear();
     }
 }
