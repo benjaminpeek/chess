@@ -26,18 +26,21 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        // prepare the necessary data access points
+        // prepare the data access points
         UserDataAccess userDataAccess = new MemoryUserDataAccess();
         AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
         GameDataAccess gameDataAccess = new MemoryGameDataAccess();
+
         // prepare the services
         ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
         UserService userService = new UserService(userDataAccess, authDataAccess);
+
         // prepare the handlers
         ClearHandler clearHandler = new ClearHandler(clearService);
         UserHandler userHandler = new UserHandler(userService);
 
-        // Register your endpoints and handle exceptions here.
+        // Register endpoints and handle exceptions here.
+        // endpoints
         Spark.delete("/db", clearHandler::clearApplicationHandler);
         Spark.post("/user", userHandler::registerHandler);
         Spark.post("/session", userHandler::loginHandler);

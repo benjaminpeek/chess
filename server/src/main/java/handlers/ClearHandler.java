@@ -13,7 +13,7 @@ public class ClearHandler {
         this.clearService = clearService;
     }
 
-    public String clearApplicationHandler(Response res) throws DataAccessException {
+    public String clearApplicationHandler(Request req, Response res) throws DataAccessException {
         ClearApplicationResponse clearApplicationResponse = this.clearService.clearApplicationService();
         res.status(200);
         return new Gson().toJson(clearApplicationResponse);
