@@ -14,7 +14,8 @@ public class ClearHandler {
     }
 
     public String clearApplicationHandler(Request req, Response res) throws DataAccessException {
-        ClearApplicationResponse clearApplicationResponse = this.clearService.clearApplicationService();
+        ClearApplicationResponse clearApplicationResponse = this.clearService.clearApplicationService(req.body());
+
         res.status(200);
         return new Gson().toJson(clearApplicationResponse);
     }

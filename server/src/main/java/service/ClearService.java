@@ -17,11 +17,11 @@ public class ClearService {
         this.gameDataAccess = gameDataAccess;
     }
 
-    public ClearApplicationResponse clearApplicationService() throws DataAccessException {
+    public ClearApplicationResponse clearApplicationService(String body) throws DataAccessException {
         this.userDataAccess.clearUsers();
         this.authDataAccess.clearAuths();
         this.gameDataAccess.clearGames();
 
-        return new ClearApplicationResponse("database cleared");
+        return new ClearApplicationResponse("database cleared" + body);
     }
 }
