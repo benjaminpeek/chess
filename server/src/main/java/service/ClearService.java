@@ -1,6 +1,27 @@
 package service;
 
+import dataAccess.DataAccessException;
+import dataAccess.interfaces.AuthDataAccess;
+import dataAccess.interfaces.GameDataAccess;
+import dataAccess.interfaces.UserDataAccess;
+import response.ClearApplicationResponse;
+
 public class ClearService {
-    // the service accesses the data, from our memory access classes
-    // clearApplicationService()
+    UserDataAccess userDataAccess;
+    AuthDataAccess authDataAccess;
+    GameDataAccess gameDataAccess;
+
+    public ClearService(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) {
+        this.userDataAccess = userDataAccess;
+        this.authDataAccess = authDataAccess;
+        this.gameDataAccess = gameDataAccess;
+    }
+
+    public ClearApplicationResponse clearApplicationService() throws DataAccessException {
+        this.userDataAccess.clearUsers();
+        this.authDataAccess.clearAuths();
+        this.gameDataAccess.clearGames();
+
+        return new ClearApplicationResponse("database cleared");
+    }
 }

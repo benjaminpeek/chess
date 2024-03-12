@@ -3,13 +3,17 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
+import dataAccess.interfaces.GameDataAccess;
 import dataAccess.interfaces.UserDataAccess;
 import dataAccess.memory.MemoryAuthDataAccess;
+import dataAccess.memory.MemoryGameDataAccess;
 import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
+import handlers.ClearHandler;
 import handlers.UserHandler;
+import service.ClearService;
 import service.UserService;
 import spark.*;
 
@@ -22,15 +26,19 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        // prepare the necessary data access objects
+        // prepare the necessary data access points
         UserDataAccess userDataAccess = new MemoryUserDataAccess();
         AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
+        GameDataAccess gameDataAccess = new MemoryGameDataAccess();
         // prepare the services
+        ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
         UserService userService = new UserService(userDataAccess, authDataAccess);
         // prepare the handlers
+        ClearHandler clearHandler = new ClearHandler(clearService);
         UserHandler userHandler = new UserHandler(userService);
 
         // Register your endpoints and handle exceptions here.
+        Spark.delete("/db", clearHandler::clearApplicationHandler);
         Spark.post("/user", userHandler::registerHandler);
         Spark.post("/session", userHandler::loginHandler);
 

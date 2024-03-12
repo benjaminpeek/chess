@@ -24,11 +24,11 @@ public class UserService {
 
     public RegisterResponse registerService(RegisterRequest request) throws AlreadyTakenException, BadRequestException,
             DataAccessException {
-        if (this.userDataAccess.getUser(request.username()) != null) {
-            throw new AlreadyTakenException("Error: already taken");
-        }
         if (request.username() == null || request.password() == null || request.email() == null) {
             throw new BadRequestException("Error: bad request");
+        }
+        if (this.userDataAccess.getUser(request.username()) != null) {
+            throw new AlreadyTakenException("Error: already taken");
         }
 
         userDataAccess.createUser(request.username(), request.password(), request.email());

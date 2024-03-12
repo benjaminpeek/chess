@@ -1,5 +1,6 @@
 package dataAccess.memory;
 
+import dataAccess.DataAccessException;
 import dataAccess.interfaces.GameDataAccess;
 import model.GameData;
 import model.UserData;
@@ -28,5 +29,10 @@ public class MemoryGameDataAccess implements GameDataAccess {
     @Override
     public void updateGame(String clientColor, int gameID) {
 
+    }
+
+    @Override
+    public void clearGames() throws DataAccessException {
+        gameDataMap.clear();
     }
 }

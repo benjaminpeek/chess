@@ -1,5 +1,6 @@
 package dataAccess.memory;
 
+import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import model.AuthData;
 
@@ -26,5 +27,10 @@ public class MemoryAuthDataAccess implements AuthDataAccess {
     @Override
     public String getAuth(String authToken) {
         return authDataMap.get(authToken).authToken();
+    }
+
+    @Override
+    public void clearAuths() throws DataAccessException {
+        authDataMap.clear();
     }
 }
