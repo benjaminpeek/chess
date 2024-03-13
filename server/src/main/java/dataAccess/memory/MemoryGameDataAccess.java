@@ -13,7 +13,7 @@ public class MemoryGameDataAccess implements GameDataAccess {
     private int newGameID;
 
     @Override
-    public Collection<GameData.SerializedGame> listGames(String authToken) {
+    public Collection<GameData.SerializedGame> listGames() {
         // turn all games from data access to a serializable game, and return them in a collection
         HashSet<GameData.SerializedGame> allGames = new HashSet<>();
         for (GameData gameData : this.gameDataMap.values()) {

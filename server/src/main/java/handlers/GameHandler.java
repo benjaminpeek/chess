@@ -6,8 +6,11 @@ import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
 import request.CreateGameRequest;
 import response.CreateGameResponse;
+import response.ListGamesResponse;
 import service.GameService;
 import spark.*;
+
+import java.util.Map;
 
 public class GameHandler {
     private final GameService gameService;
@@ -27,6 +30,9 @@ public class GameHandler {
     }
 
     public String listGamesHandler(Request req, Response res) throws DataAccessException, UnauthorizedException {
-        return null;
+        ListGamesResponse listGamesResponse = this.gameService.listGamesService(req.headers("authorization"));
+
+        res.status(200);
+        return new Gson().toJson(Map.of("games", listGamesResponse));
     }
 }
