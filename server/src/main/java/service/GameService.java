@@ -54,9 +54,15 @@ public class GameService {
         if (this.authDataAccess.getAuth(authToken) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
-        if (this.gameDataAccess.getGame(joinGameRequest.gameID()).whiteUsername() != null ||
-                this.gameDataAccess.getGame(joinGameRequest.gameID()).blackUsername() != null) {
-            throw new AlreadyTakenException("Error: already taken");
+        if ("WHITE".equals(joinGameRequest.playerColor())) {
+            if (this.gameDataAccess.getGame(joinGameRequest.gameID()).whiteUsername() != null) {
+                throw new AlreadyTakenException("Error: already taken");
+            }
+        }
+        if ("BLACK".equals(joinGameRequest.playerColor())) {
+            if (this.gameDataAccess.getGame(joinGameRequest.gameID()).blackUsername() != null) {
+                throw new AlreadyTakenException("Error: already taken");
+            }
         }
 
         if (joinGameRequest.playerColor() == null) {

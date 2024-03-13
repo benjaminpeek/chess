@@ -2,6 +2,7 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
+import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
 import request.CreateGameRequest;
@@ -37,7 +38,7 @@ public class GameHandler {
     }
 
     public String joinGameHandler(Request req, Response res) throws DataAccessException, BadRequestException,
-            UnauthorizedException {
+            UnauthorizedException, AlreadyTakenException {
         JoinGameRequest joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
         JoinGameResponse joinGameResponse = this.gameService.joinGameService(joinGameRequest,
                 req.headers("authorization"));
