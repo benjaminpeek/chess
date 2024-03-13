@@ -19,11 +19,11 @@ public class GameService {
 
     public CreateGameResponse createGameService(CreateGameRequest createGameRequest, String authToken) throws
             DataAccessException, BadRequestException, UnauthorizedException {
-        if (createGameRequest.gameName() == null) {
-            throw new BadRequestException("Error: bad request");
-        }
         if (this.authDataAccess.getAuth(authToken) == null) {
             throw new UnauthorizedException("Error: unauthorized");
+        }
+        if (createGameRequest.gameName() == null) {
+            throw new BadRequestException("Error: bad request");
         }
         int newGameID = this.gameDataAccess.createGame(createGameRequest.gameName());
 
