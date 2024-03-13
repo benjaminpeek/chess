@@ -60,6 +60,10 @@ public class GameService {
             return new JoinGameResponse("joined game as spectator");
         }
 
+        if (!joinGameRequest.playerColor().equals("WHITE") && !joinGameRequest.playerColor().equals("BLACK")) {
+            throw new BadRequestException("Error: bad request");
+        }
+
         // add caller to game as player
         this.gameDataAccess.addPlayer(joinGameRequest.playerColor(), joinGameRequest.gameID());
         return new JoinGameResponse("joined game as " + joinGameRequest.playerColor());
