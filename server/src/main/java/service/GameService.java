@@ -3,6 +3,7 @@ package service;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
+import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
 import model.GameData;
@@ -46,12 +47,16 @@ public class GameService {
     }
 
     public JoinGameResponse joinGameService(JoinGameRequest joinGameRequest, String authToken) throws
-            DataAccessException, BadRequestException, UnauthorizedException {
+            DataAccessException, BadRequestException, UnauthorizedException, AlreadyTakenException {
         if (this.gameDataAccess.getGame(joinGameRequest.gameID()) == null) {
             throw new BadRequestException("Error: bad request");
         }
         if (this.authDataAccess.getAuth(authToken) == null) {
             throw new UnauthorizedException("Error: unauthorized");
+        }
+        if (this.gameDataAccess.getGame(joinGameRequest.gameID()).whiteUsername() != null ||
+                this.gameDataAccess.getGame(joinGameRequest.gameID()).blackUsername() != null) {
+            throw new AlreadyTakenException("Error: already taken");
         }
 
         if (joinGameRequest.playerColor() == null) {
