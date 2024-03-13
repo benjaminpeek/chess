@@ -2,7 +2,6 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
-import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
 import request.CreateGameRequest;
