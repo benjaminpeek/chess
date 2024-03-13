@@ -12,8 +12,10 @@ import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
 import handlers.ClearHandler;
+import handlers.GameHandler;
 import handlers.UserHandler;
 import service.ClearService;
+import service.GameService;
 import service.UserService;
 import spark.*;
 
@@ -34,10 +36,12 @@ public class Server {
         // prepare the services
         ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
         UserService userService = new UserService(userDataAccess, authDataAccess);
+        GameService gameService = new GameService(gameDataAccess, authDataAccess);
 
         // prepare the handlers
         ClearHandler clearHandler = new ClearHandler(clearService);
         UserHandler userHandler = new UserHandler(userService);
+        GameHandler gameHandler = new GameHandler(gameService);
 
         // Register endpoints and handle exceptions here.
         // endpoints
@@ -45,6 +49,8 @@ public class Server {
         Spark.post("/user", userHandler::registerHandler);
         Spark.post("/session", userHandler::loginHandler);
         Spark.delete("/session", userHandler::logoutHandler);
+        // PUT LIST GAMES HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Spark.post("/game", gameHandler::createGameHandler);
 
         // exceptions
         Spark.exception(DataAccessException.class, (e, request, response) -> {

@@ -1,29 +1,32 @@
 package dataAccess.memory;
 
-import dataAccess.DataAccessException;
+import chess.ChessGame;
 import dataAccess.interfaces.GameDataAccess;
 import model.GameData;
-import model.UserData;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryGameDataAccess implements GameDataAccess {
     private final Map<Integer, GameData> gameDataMap = new HashMap<>();
+    private int newGameID;
+
     @Override
     public Collection<GameData> listGames(String authToken) {
         return null;
     }
 
     @Override
-    public void createGame(String authToken, int gameID) {
-
+    public int createGame(String gameName) {
+        incrementNewGameID();
+        gameDataMap.put(this.newGameID, new GameData(this.newGameID, "", "", gameName,
+                new ChessGame()));
+        return this.newGameID;
     }
 
     @Override
     public GameData getGame(int gameID) {
-        return null;
+        return this.gameDataMap.get(gameID);
     }
 
     @Override
@@ -32,7 +35,11 @@ public class MemoryGameDataAccess implements GameDataAccess {
     }
 
     @Override
-    public void clearGames() throws DataAccessException {
+    public void clearGames() {
         gameDataMap.clear();
+    }
+
+    private void incrementNewGameID() {
+        this.newGameID++;
     }
 }
