@@ -5,6 +5,7 @@ import dataAccess.interfaces.GameDataAccess;
 import model.GameData;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class MemoryGameDataAccess implements GameDataAccess {
@@ -12,8 +13,15 @@ public class MemoryGameDataAccess implements GameDataAccess {
     private int newGameID;
 
     @Override
-    public Collection<GameData> listGames(String authToken) {
-        return null;
+    public Collection<GameData.SerializedGame> listGames(String authToken) {
+        // turn all games from data access to a serializable game, and return them in a collection
+        HashSet<GameData.SerializedGame> allGames = new HashSet<>();
+        for (GameData gameData : this.gameDataMap.values()) {
+            allGames.add(new GameData.SerializedGame(gameData.gameID(), gameData.whiteUsername(),
+                    gameData.blackUsername(), gameData.gameName()));
+        }
+
+        return allGames;
     }
 
     @Override
@@ -37,6 +45,7 @@ public class MemoryGameDataAccess implements GameDataAccess {
     @Override
     public void clearGames() {
         gameDataMap.clear();
+        this.newGameID = 0;
     }
 
     private void incrementNewGameID() {

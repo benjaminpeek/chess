@@ -49,7 +49,7 @@ public class Server {
         Spark.post("/user", userHandler::registerHandler);
         Spark.post("/session", userHandler::loginHandler);
         Spark.delete("/session", userHandler::logoutHandler);
-        // PUT LIST GAMES HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        Spark.get("/game", gameHandler::listGamesHandler);
         Spark.post("/game", gameHandler::createGameHandler);
 
         // exceptions

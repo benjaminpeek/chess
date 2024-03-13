@@ -6,7 +6,7 @@ import model.GameData;
 import java.util.Collection;
 
 public interface GameDataAccess {
-    Collection<GameData> listGames(String authToken) throws DataAccessException;
+    Collection<GameData.SerializedGame> listGames(String authToken) throws DataAccessException;
 
     int createGame(String gameName) throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;

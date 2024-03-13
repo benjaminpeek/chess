@@ -25,4 +25,8 @@ public class GameHandler {
         res.status(200);
         return new Gson().toJson(createGameResponse);
     }
+
+    public String listGamesHandler(Request req, Response res) throws DataAccessException, UnauthorizedException {
+        return null;
+    }
 }

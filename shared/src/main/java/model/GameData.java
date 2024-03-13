@@ -8,4 +8,11 @@ public record GameData (
         String blackUsername,
         String gameName,
         ChessGame game
-) {}
+) {
+    public record SerializedGame(
+            int gameID,
+            String whiteUsername,
+            String blackUsername,
+            String gameName
+    ) {}
+}
