@@ -10,6 +10,7 @@ public interface GameDataAccess {
 
     int createGame(String gameName) throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;
-    void updateGame(String clientColor, int gameID) throws DataAccessException;
+    void addPlayer(String clientColor, int gameID) throws DataAccessException;
+    void addSpectator(int gameID, String authToken) throws DataAccessException;
     void clearGames() throws DataAccessException;
 }

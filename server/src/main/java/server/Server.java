@@ -31,7 +31,7 @@ public class Server {
         // prepare the data access points
         UserDataAccess userDataAccess = new MemoryUserDataAccess();
         AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess();
+        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
 
         // prepare the services
         ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
@@ -51,6 +51,7 @@ public class Server {
         Spark.delete("/session", userHandler::logoutHandler);
         Spark.get("/game", gameHandler::listGamesHandler);
         Spark.post("/game", gameHandler::createGameHandler);
+        Spark.put("/game", gameHandler::joinGameHandler);
 
         // exceptions
         Spark.exception(DataAccessException.class, (e, request, response) -> {

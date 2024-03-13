@@ -1,8 +1,12 @@
 package dataAccess.memory;
 
 import chess.ChessGame;
+import dataAccess.DataAccessException;
+import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
+import model.AuthData;
 import model.GameData;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +15,12 @@ import java.util.Map;
 public class MemoryGameDataAccess implements GameDataAccess {
     private final Map<Integer, GameData> gameDataMap = new HashMap<>();
     private int newGameID = -1;
+    private final AuthDataAccess authDataAccess;
+
+    public MemoryGameDataAccess(AuthDataAccess authDataAccess) {
+        this.authDataAccess = authDataAccess;
+    }
+
 
     @Override
     public Collection<GameData.SerializedGame> listGames() {
@@ -28,7 +38,7 @@ public class MemoryGameDataAccess implements GameDataAccess {
     public int createGame(String gameName) {
         incrementNewGameID();
         gameDataMap.put(this.newGameID, new GameData(this.newGameID, "", "", gameName,
-                new ChessGame()));
+                new ChessGame(), new HashSet<>()));
         return this.newGameID;
     }
 
@@ -38,8 +48,22 @@ public class MemoryGameDataAccess implements GameDataAccess {
     }
 
     @Override
-    public void updateGame(String clientColor, int gameID) {
+    public void addPlayer(String clientColor, int gameID) {
+        GameData game = this.gameDataMap.get(gameID);
+        if (clientColor.equals("WHITE")) {
+            this.gameDataMap.put(gameID, new GameData(gameID, clientColor, game.blackUsername(), game.gameName(),
+                    game.game(), game.spectators()));
+        } else if (clientColor.equals("BLACK")) {
+            this.gameDataMap.put(gameID, new GameData(gameID, game.whiteUsername(), clientColor, game.gameName(),
+                    game.game(), game.spectators()));
+        }
+    }
 
+    @Override
+    public void addSpectator(int gameID, String authToken) throws DataAccessException {
+        GameData game = this.gameDataMap.get(gameID);
+        AuthData userAuth = this.authDataAccess.getAuth(authToken);
+        game.spectators().add(userAuth);
     }
 
     @Override

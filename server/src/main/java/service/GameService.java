@@ -7,7 +7,9 @@ import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
 import model.GameData;
 import request.CreateGameRequest;
+import request.JoinGameRequest;
 import response.CreateGameResponse;
+import response.JoinGameResponse;
 import response.ListGamesResponse;
 
 import java.util.Collection;
@@ -32,18 +34,34 @@ public class GameService {
 
     public CreateGameResponse createGameService(CreateGameRequest createGameRequest, String authToken) throws
             DataAccessException, BadRequestException, UnauthorizedException {
-        if (this.authDataAccess.getAuth(authToken) == null) {
-            throw new UnauthorizedException("Error: unauthorized");
-        }
         if (createGameRequest.gameName() == null) {
             throw new BadRequestException("Error: bad request");
         }
-        int newGameID = this.gameDataAccess.createGame(createGameRequest.gameName());
+        if (this.authDataAccess.getAuth(authToken) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
 
+        int newGameID = this.gameDataAccess.createGame(createGameRequest.gameName());
         return new CreateGameResponse(newGameID);
     }
 
-    // the service accesses the data, from our memory access classes
-    // createGameService(String authToken, String gameName)
-    // joinGameService()
+    public JoinGameResponse joinGameService(JoinGameRequest joinGameRequest, String authToken) throws
+            DataAccessException, BadRequestException, UnauthorizedException {
+        if (this.gameDataAccess.getGame(joinGameRequest.gameID()) == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+        if (this.authDataAccess.getAuth(authToken) == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        if (joinGameRequest.playerColor() == null) {
+            // add the caller as a spectator to the game
+            this.gameDataAccess.addSpectator(joinGameRequest.gameID(), authToken);
+            return new JoinGameResponse("joined game as spectator");
+        }
+
+        // add caller to game as player
+        this.gameDataAccess.addPlayer(joinGameRequest.playerColor(), joinGameRequest.gameID());
+        return new JoinGameResponse("joined game as " + joinGameRequest.playerColor());
+    }
 }
