@@ -10,7 +10,9 @@ import response.ListGamesResponse;
 import service.GameService;
 import spark.*;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class GameHandler {
     private final GameService gameService;
@@ -33,6 +35,6 @@ public class GameHandler {
         ListGamesResponse listGamesResponse = this.gameService.listGamesService(req.headers("authorization"));
 
         res.status(200);
-        return new Gson().toJson(Map.of("games", listGamesResponse));
+        return new Gson().toJson(listGamesResponse);
     }
 }

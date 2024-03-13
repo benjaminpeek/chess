@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MemoryGameDataAccess implements GameDataAccess {
     private final Map<Integer, GameData> gameDataMap = new HashMap<>();
-    private int newGameID;
+    private int newGameID = -1;
 
     @Override
     public Collection<GameData.SerializedGame> listGames() {
@@ -45,7 +45,7 @@ public class MemoryGameDataAccess implements GameDataAccess {
     @Override
     public void clearGames() {
         gameDataMap.clear();
-        this.newGameID = 0;
+        this.newGameID = -1;
     }
 
     private void incrementNewGameID() {
