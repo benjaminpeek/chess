@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class MemoryGameDataAccess implements GameDataAccess {
     private final Map<Integer, GameData> gameDataMap = new HashMap<>();
-    private int newGameID = -1;
+    private int newGameID;
     private final AuthDataAccess authDataAccess;
 
     public MemoryGameDataAccess(AuthDataAccess authDataAccess) {
@@ -37,7 +37,7 @@ public class MemoryGameDataAccess implements GameDataAccess {
     @Override
     public int createGame(String gameName) {
         incrementNewGameID();
-        gameDataMap.put(this.newGameID, new GameData(this.newGameID, "", "", gameName,
+        gameDataMap.put(this.newGameID, new GameData(this.newGameID, null, null, gameName,
                 new ChessGame(), new HashSet<>()));
         return this.newGameID;
     }
@@ -48,13 +48,14 @@ public class MemoryGameDataAccess implements GameDataAccess {
     }
 
     @Override
-    public void addPlayer(String clientColor, int gameID) {
+    public void addPlayer(String clientColor, int gameID, String authToken) throws DataAccessException {
         GameData game = this.gameDataMap.get(gameID);
+        AuthData user = this.authDataAccess.getAuth(authToken);
         if (clientColor.equals("WHITE")) {
-            this.gameDataMap.put(gameID, new GameData(gameID, clientColor, game.blackUsername(), game.gameName(),
+            this.gameDataMap.put(gameID, new GameData(gameID, user.username(), game.blackUsername(), game.gameName(),
                     game.game(), game.spectators()));
         } else if (clientColor.equals("BLACK")) {
-            this.gameDataMap.put(gameID, new GameData(gameID, game.whiteUsername(), clientColor, game.gameName(),
+            this.gameDataMap.put(gameID, new GameData(gameID, game.whiteUsername(), user.username(), game.gameName(),
                     game.game(), game.spectators()));
         }
     }
@@ -69,7 +70,7 @@ public class MemoryGameDataAccess implements GameDataAccess {
     @Override
     public void clearGames() {
         gameDataMap.clear();
-        this.newGameID = -1;
+        this.newGameID = 0;
     }
 
     private void incrementNewGameID() {

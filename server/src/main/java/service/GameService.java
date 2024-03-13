@@ -65,7 +65,7 @@ public class GameService {
         }
 
         // add caller to game as player
-        this.gameDataAccess.addPlayer(joinGameRequest.playerColor(), joinGameRequest.gameID());
+        this.gameDataAccess.addPlayer(joinGameRequest.playerColor(), joinGameRequest.gameID(), authToken);
         return new JoinGameResponse("joined game as " + joinGameRequest.playerColor());
     }
 }
