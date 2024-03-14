@@ -25,179 +25,207 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             case WHITE -> {
                 // has not moved yet, check the two spaces in front of it and the two diagonal spaces.
                 if (myRow == 2) {
-                    // 1 and 2 spaces ahead, no promotion
-                    if (board.getPiece(new ChessPosition(myRow + 1, myCol)) == null) {
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), null));
-                        if (board.getPiece(new ChessPosition(myRow + 2, myCol)) == null) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 2, myCol), null));
-                        }
-                    }
-                    // diagonal spaces, no promotion
-                    int checkRow = myRow + 1;
-                    int leftCol = myCol - 1;
-                    int rightCol = myCol + 1;
-                    if (leftCol >= 1 && leftCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
-                        }
-                    }
-                    if (rightCol >= 1 && rightCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
-                        }
-                    }
+                    whiteUnmovedPawnMoves(board, myPosition, moves, myRow, myCol, myColor);
                 }
                 // else if piece is about to promote
                 else if (myRow == 7) {
-                    // straight ahead one space, yes promotion
-                    if (board.getPiece(new ChessPosition(myRow + 1, myCol)) == null) {
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.KNIGHT));
-                    }
-                    // diagonal spaces, yes promotion
-                    int checkRow = myRow + 1;
-                    int leftCol = myCol - 1;
-                    int rightCol = myCol + 1;
-                    if (leftCol >= 1 && leftCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.KNIGHT));
-                        }
-                    }
-                    if (rightCol >= 1 && rightCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.KNIGHT));
-                        }
-                    }
+                    whitePawnPromotionMoves(board, myPosition, moves, myRow, myCol, myColor);
                 }
                 // piece is not at the beginning, or at the end, no promotion
                 else {
-                    // 1 space ahead, check it exists
-                    if (myRow + 1 >= 1 && myRow + 1 <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(myRow + 1, myCol));
-                        if (checkPiece == null) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), null));
-                        }
-                    }
-                    int checkRow = myRow + 1;
-                    int leftCol = myCol - 1;
-                    int rightCol = myCol + 1;
-                    if (checkRow >= 1 && checkRow <= 8) {
-                        if (leftCol >= 1 && leftCol <= 8) {
-                            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
-                            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
-                            }
-                        }
-                        if (rightCol >= 1 && rightCol <= 8) {
-                            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
-                            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
-                            }
-                        }
-                    }
+                    whiteMiddlePawnMoves(board, myPosition, moves, myRow, myCol, myColor);
                 }
             }
             case BLACK -> {
                 // has not moved yet, check the two spaces in front of it and the two diagonal spaces.
                 if (myRow == 7) {
-                    // 1 and 2 spaces ahead, no promotion
-                    if (board.getPiece(new ChessPosition(myRow - 1, myCol)) == null) {
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), null));
-                        if (board.getPiece(new ChessPosition(myRow - 2, myCol)) == null) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 2, myCol), null));
-                        }
-                    }
-                    // diagonal spaces, no promotion
-                    int checkRow = myRow - 1;
-                    int leftCol = myCol - 1;
-                    int rightCol = myCol + 1;
-                    if (leftCol >= 1 && leftCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
-                        }
-                    }
-                    if (rightCol >= 1 && rightCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
-                        }
-                    }
+                    blackUnmovedPawnMoves(board, myPosition, moves, myRow, myCol, myColor);
                 }
                 // else if piece is about to promote
                 else if (myRow == 2) {
-                    // straight ahead one space, yes promotion
-                    if (board.getPiece(new ChessPosition(myRow - 1, myCol)) == null) {
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.KNIGHT));
-                    }
-                    // diagonal spaces, yes promotion
-                    int checkRow = myRow - 1;
-                    int leftCol = myCol - 1;
-                    int rightCol = myCol + 1;
-                    if (leftCol >= 1 && leftCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.KNIGHT));
-                        }
-                    }
-                    if (rightCol >= 1 && rightCol <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
-                        if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.KNIGHT));
-                        }
-                    }
+                    blackPawnPromotionMoves(board, myPosition, moves, myRow, myCol, myColor);
                 }
                 // piece is not at the beginning, or at the end, no promotion
                 else {
-                    // 1 space ahead, check it exists
-                    if (myRow - 1 >= 1 && myRow + 1 <= 8) {
-                        ChessPiece checkPiece = board.getPiece(new ChessPosition(myRow - 1, myCol));
-                        if (checkPiece == null) {
-                            moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), null));
-                        }
-                    }
-                    int checkRow = myRow - 1;
-                    int leftCol = myCol - 1;
-                    int rightCol = myCol + 1;
-                    if (checkRow >= 1 && checkRow <= 8) {
-                        if (leftCol >= 1 && leftCol <= 8) {
-                            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
-                            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
-                            }
-                        }
-                        if (rightCol >= 1 && rightCol <= 8) {
-                            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
-                            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
-                            }
-                        }
-                    }
+                    blackMiddlePawnMoves(board, myPosition, moves, myRow, myCol, myColor);
                 }
             }
         }
 
         return moves;
+    }
+
+    private void whiteUnmovedPawnMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> moves,
+                                  int myRow, int myCol, ChessGame.TeamColor myColor) {
+        // 1 and 2 spaces ahead, no promotion
+        if (board.getPiece(new ChessPosition(myRow + 1, myCol)) == null) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), null));
+            if (board.getPiece(new ChessPosition(myRow + 2, myCol)) == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 2, myCol), null));
+            }
+        }
+        // diagonal spaces, no promotion
+        int checkRow = myRow + 1;
+        int leftCol = myCol - 1;
+        int rightCol = myCol + 1;
+        if (leftCol >= 1 && leftCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+            }
+        }
+        if (rightCol >= 1 && rightCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+            }
+        }
+    }
+
+    private void whitePawnPromotionMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> moves, int myRow,
+                                         int myCol, ChessGame.TeamColor myColor) {
+        // straight ahead one space, yes promotion
+        if (board.getPiece(new ChessPosition(myRow + 1, myCol)) == null) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.QUEEN));
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.ROOK));
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.BISHOP));
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.KNIGHT));
+        }
+        // diagonal spaces, yes promotion
+        int checkRow = myRow + 1;
+        int leftCol = myCol - 1;
+        int rightCol = myCol + 1;
+        if (leftCol >= 1 && leftCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.KNIGHT));
+            }
+        }
+        if (rightCol >= 1 && rightCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.KNIGHT));
+            }
+        }
+    }
+
+    private void whiteMiddlePawnMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> moves, int myRow,
+                                      int myCol, ChessGame.TeamColor myColor) {
+        // 1 space ahead, check it exists
+        if (myRow + 1 >= 1 && myRow + 1 <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(myRow + 1, myCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), null));
+            }
+        }
+        int checkRow = myRow + 1;
+        int leftCol = myCol - 1;
+        int rightCol = myCol + 1;
+        if (checkRow >= 1 && checkRow <= 8) {
+            if (leftCol >= 1 && leftCol <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+                if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+                }
+            }
+            if (rightCol >= 1 && rightCol <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+                if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+                }
+            }
+        }
+    }
+
+    private void blackUnmovedPawnMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> moves, int myRow,
+                                       int myCol, ChessGame.TeamColor myColor) {
+        // 1 and 2 spaces ahead, no promotion
+        if (board.getPiece(new ChessPosition(myRow - 1, myCol)) == null) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), null));
+            if (board.getPiece(new ChessPosition(myRow - 2, myCol)) == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 2, myCol), null));
+            }
+        }
+        // diagonal spaces, no promotion
+        int checkRow = myRow - 1;
+        int leftCol = myCol - 1;
+        int rightCol = myCol + 1;
+        if (leftCol >= 1 && leftCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+            }
+        }
+        if (rightCol >= 1 && rightCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+            }
+        }
+    }
+
+    private void blackPawnPromotionMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> moves, int myRow,
+                                         int myCol, ChessGame.TeamColor myColor) {
+        if (board.getPiece(new ChessPosition(myRow - 1, myCol)) == null) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.QUEEN));
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.ROOK));
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.BISHOP));
+            moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.KNIGHT));
+        }
+        // diagonal spaces, yes promotion
+        int checkRow = myRow - 1;
+        int leftCol = myCol - 1;
+        int rightCol = myCol + 1;
+        if (leftCol >= 1 && leftCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.KNIGHT));
+            }
+        }
+        if (rightCol >= 1 && rightCol <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+            if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.KNIGHT));
+            }
+        }
+    }
+
+    private void blackMiddlePawnMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> moves, int myRow,
+                                      int myCol, ChessGame.TeamColor myColor) {
+        if (myRow - 1 >= 1 && myRow + 1 <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(myRow - 1, myCol));
+            if (checkPiece == null) {
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), null));
+            }
+        }
+        int checkRow = myRow - 1;
+        int leftCol = myCol - 1;
+        int rightCol = myCol + 1;
+        if (checkRow >= 1 && checkRow <= 8) {
+            if (leftCol >= 1 && leftCol <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+                if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+                }
+            }
+            if (rightCol >= 1 && rightCol <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+                if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
+                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+                }
+            }
+        }
     }
 }
