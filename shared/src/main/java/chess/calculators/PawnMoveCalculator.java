@@ -166,18 +166,7 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             }
         }
         if (blackCheckRow(myRow) >= 1 && blackCheckRow(myRow) <= 8) {
-            if (leftCol(myCol) >= 1 && leftCol(myCol) <= 8) {
-                ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), leftCol(myCol)));
-                if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), leftCol(myCol)), null));
-                }
-            }
-            if (rightCol(myCol) >= 1 && rightCol(myCol) <= 8) {
-                ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), rightCol(myCol)));
-                if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), rightCol(myCol)), null));
-                }
-            }
+            blackDiagonalMiddleMoves(board, myPosition, moves, myRow, myCol, myColor);
         }
     }
 
