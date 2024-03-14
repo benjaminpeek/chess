@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class PawnMoveCalculator extends PieceMoveCalculator {
+
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> moves = new HashSet<>();
@@ -65,19 +66,16 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             }
         }
         // diagonal spaces, no promotion
-        int checkRow = myRow + 1;
-        int leftCol = myCol - 1;
-        int rightCol = myCol + 1;
-        if (leftCol >= 1 && leftCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+        if (leftCol(myCol) >= 1 && leftCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(whiteCheckRow(myRow), leftCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+                moves.add(new ChessMove(myPosition, new ChessPosition(whiteCheckRow(myRow), leftCol(myCol)), null));
             }
         }
-        if (rightCol >= 1 && rightCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+        if (rightCol(myCol) >= 1 && rightCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(whiteCheckRow(myRow), rightCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+                moves.add(new ChessMove(myPosition, new ChessPosition(whiteCheckRow(myRow), rightCol(myCol)), null));
             }
         }
     }
@@ -92,25 +90,22 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), ChessPiece.PieceType.KNIGHT));
         }
         // diagonal spaces, yes promotion
-        int checkRow = myRow + 1;
-        int leftCol = myCol - 1;
-        int rightCol = myCol + 1;
-        if (leftCol >= 1 && leftCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+        if (leftCol(myCol) >= 1 && leftCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(whiteCheckRow(myRow), leftCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.ROOK));
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol), ChessPiece.PieceType.KNIGHT));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol(myCol)), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol(myCol)), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol(myCol)), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, leftCol(myCol)), ChessPiece.PieceType.KNIGHT));
             }
         }
-        if (rightCol >= 1 && rightCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+        if (rightCol(myCol) >= 1 && rightCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(whiteCheckRow(myRow), rightCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.ROOK));
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol), ChessPiece.PieceType.KNIGHT));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol(myCol)), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol(myCol)), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol(myCol)), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, rightCol(myCol)), ChessPiece.PieceType.KNIGHT));
             }
         }
     }
@@ -124,20 +119,17 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
                 moves.add(new ChessMove(myPosition, new ChessPosition(myRow + 1, myCol), null));
             }
         }
-        int checkRow = myRow + 1;
-        int leftCol = myCol - 1;
-        int rightCol = myCol + 1;
-        if (checkRow >= 1 && checkRow <= 8) {
-            if (leftCol >= 1 && leftCol <= 8) {
-                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+        if (whiteCheckRow(myRow) >= 1 && whiteCheckRow(myRow) <= 8) {
+            if (leftCol(myCol) >= 1 && leftCol(myCol) <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(whiteCheckRow(myRow), leftCol(myCol)));
                 if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+                    moves.add(new ChessMove(myPosition, new ChessPosition(whiteCheckRow(myRow), leftCol(myCol)), null));
                 }
             }
-            if (rightCol >= 1 && rightCol <= 8) {
-                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+            if (rightCol(myCol) >= 1 && rightCol(myCol) <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(whiteCheckRow(myRow), rightCol(myCol)));
                 if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+                    moves.add(new ChessMove(myPosition, new ChessPosition(whiteCheckRow(myRow), rightCol(myCol)), null));
                 }
             }
         }
@@ -153,19 +145,16 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             }
         }
         // diagonal spaces, no promotion
-        int checkRow = myRow - 1;
-        int leftCol = myCol - 1;
-        int rightCol = myCol + 1;
-        if (leftCol >= 1 && leftCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+        if (leftCol(myCol) >= 1 && leftCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), leftCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), leftCol(myCol)), null));
             }
         }
-        if (rightCol >= 1 && rightCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+        if (rightCol(myCol) >= 1 && rightCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), rightCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), rightCol(myCol)), null));
             }
         }
     }
@@ -179,25 +168,23 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
             moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), ChessPiece.PieceType.KNIGHT));
         }
         // diagonal spaces, yes promotion
-        int checkRow = myRow - 1;
-        int leftCol = myCol - 1;
-        int rightCol = myCol + 1;
-        if (leftCol >= 1 && leftCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+        
+        if (leftCol(myCol) >= 1 && leftCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), leftCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.ROOK));
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), ChessPiece.PieceType.KNIGHT));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), leftCol(myCol)), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), leftCol(myCol)), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), leftCol(myCol)), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), leftCol(myCol)), ChessPiece.PieceType.KNIGHT));
             }
         }
-        if (rightCol >= 1 && rightCol <= 8) {
-            ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+        if (rightCol(myCol) >= 1 && rightCol(myCol) <= 8) {
+            ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), rightCol(myCol)));
             if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.ROOK));
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), ChessPiece.PieceType.KNIGHT));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), rightCol(myCol)), ChessPiece.PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), rightCol(myCol)), ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), rightCol(myCol)), ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), rightCol(myCol)), ChessPiece.PieceType.KNIGHT));
             }
         }
     }
@@ -210,22 +197,35 @@ public class PawnMoveCalculator extends PieceMoveCalculator {
                 moves.add(new ChessMove(myPosition, new ChessPosition(myRow - 1, myCol), null));
             }
         }
-        int checkRow = myRow - 1;
-        int leftCol = myCol - 1;
-        int rightCol = myCol + 1;
-        if (checkRow >= 1 && checkRow <= 8) {
-            if (leftCol >= 1 && leftCol <= 8) {
-                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, leftCol));
+        if (blackCheckRow(myRow) >= 1 && blackCheckRow(myRow) <= 8) {
+            if (leftCol(myCol) >= 1 && leftCol(myCol) <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), leftCol(myCol)));
                 if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, leftCol), null));
+                    moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), leftCol(myCol)), null));
                 }
             }
-            if (rightCol >= 1 && rightCol <= 8) {
-                ChessPiece checkPiece = board.getPiece(new ChessPosition(checkRow, rightCol));
+            if (rightCol(myCol) >= 1 && rightCol(myCol) <= 8) {
+                ChessPiece checkPiece = board.getPiece(new ChessPosition(blackCheckRow(myRow), rightCol(myCol)));
                 if (checkPiece != null && checkPiece.getTeamColor() != myColor) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(checkRow, rightCol), null));
+                    moves.add(new ChessMove(myPosition, new ChessPosition(blackCheckRow(myRow), rightCol(myCol)), null));
                 }
             }
         }
+    }
+
+    private int whiteCheckRow(int row) {
+        return row + 1;
+    }
+
+    private int blackCheckRow(int row) {
+        return row - 1;
+    }
+
+    private int leftCol(int col) {
+        return col - 1;
+    }
+
+    private int rightCol(int col) {
+        return col + 1;
     }
 }
