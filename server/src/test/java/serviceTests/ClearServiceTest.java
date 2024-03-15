@@ -21,16 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClearServiceTest {
 
+    AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
+    UserDataAccess userDataAccess = new MemoryUserDataAccess();
+    GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
+    ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
+    GameService gameService = new GameService(gameDataAccess, authDataAccess);
+    UserService userService = new UserService(userDataAccess, authDataAccess);
+
     @Test
     void clearApplicationService() throws DataAccessException, UnauthorizedException, BadRequestException, AlreadyTakenException {
-        AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        UserDataAccess userDataAccess = new MemoryUserDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
-
-        GameService gameService = new GameService(gameDataAccess, authDataAccess);
-        UserService userService = new UserService(userDataAccess, authDataAccess);
-        ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
-
         String registerAuthToken = userService.registerService(new RegisterRequest("ben", "pass",
                 "email")).authToken();
         gameService.createGameService(new CreateGameRequest("game1"), registerAuthToken);

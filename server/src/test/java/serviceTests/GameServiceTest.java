@@ -3,15 +3,19 @@ package serviceTests;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
+import dataAccess.interfaces.UserDataAccess;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryGameDataAccess;
+import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
 import model.GameData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.CreateGameRequest;
 import request.JoinGameRequest;
+import service.ClearService;
 import service.GameService;
 
 import java.util.Collection;
@@ -20,10 +24,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameServiceTest {
 
+    AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
+    UserDataAccess userDataAccess = new MemoryUserDataAccess();
+    GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
+    ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);
+
+    @BeforeEach
+    void setup() throws DataAccessException {
+        clearService.clearApplicationService("");
+    }
+
     @Test
     void listGamesServiceSuccess() throws DataAccessException, UnauthorizedException, BadRequestException {
-        AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
         String authToken = authDataAccess.createAuth("user1");
 
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
@@ -36,8 +48,6 @@ class GameServiceTest {
 
     @Test
     void listGamesServiceThrowsUnauthorized() throws DataAccessException, UnauthorizedException, BadRequestException {
-        AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
         String authToken = authDataAccess.createAuth("user1");
 
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
@@ -48,8 +58,6 @@ class GameServiceTest {
 
     @Test
     void createGameServiceSuccess() throws DataAccessException, UnauthorizedException, BadRequestException {
-        AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
         String authToken = authDataAccess.createAuth("mega man");
 
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
@@ -60,9 +68,6 @@ class GameServiceTest {
 
     @Test
     void createGameServiceThrowsUnauthorized() throws DataAccessException {
-        AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
-
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
         assertTrue(gameDataAccess.listGames().isEmpty());
         assertThrows(UnauthorizedException.class, () -> gameService.createGameService(new CreateGameRequest("64"),
@@ -71,8 +76,6 @@ class GameServiceTest {
 
     @Test
     void joinGameServiceSuccess() throws DataAccessException, UnauthorizedException, BadRequestException, AlreadyTakenException {
-        AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
         String authToken = authDataAccess.createAuth("batman");
 
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
@@ -94,8 +97,6 @@ class GameServiceTest {
 
     @Test
     void joinGameServiceThrowsAlreadyTaken() throws DataAccessException, UnauthorizedException, BadRequestException, AlreadyTakenException {
-        AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
         String authToken = authDataAccess.createAuth("jack sparrow");
 
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
