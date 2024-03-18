@@ -18,19 +18,20 @@ public class SqlUserDataAccess implements UserDataAccess {
     @Override
     public UserData getUser(String username) {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username FROM users WHERE username=?";
+            var statement = "SELECT username, password, email FROM users WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setInt(1, id);
+                ps.setString(1, username);
                 try (var rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return readPet(rs);
-                    }
+                    String resUsername = rs.getString("username");
+                    String resPassword = rs.getString("password");
+                    String resEmail = rs.getString("email");
+
+                    return new UserData(resUsername, resPassword, resEmail);
                 }
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
