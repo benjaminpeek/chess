@@ -2,12 +2,12 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
+import dataAccess.SqlUserDataAccess;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
 import dataAccess.interfaces.UserDataAccess;
 import dataAccess.memory.MemoryAuthDataAccess;
 import dataAccess.memory.MemoryGameDataAccess;
-import dataAccess.memory.MemoryUserDataAccess;
 import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
@@ -29,9 +29,10 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // prepare the data access points
-        UserDataAccess userDataAccess = new MemoryUserDataAccess();
+        UserDataAccess userDataAccess = new SqlUserDataAccess();
         AuthDataAccess authDataAccess = new MemoryAuthDataAccess();
         GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
+
 
         // prepare the services
         ClearService clearService = new ClearService(userDataAccess, authDataAccess, gameDataAccess);

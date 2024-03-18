@@ -1,5 +1,7 @@
 package dataAccess;
 
+import exceptions.ResponseException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -67,6 +69,20 @@ public class DatabaseManager {
             return conn;
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    // configures database tables for each DAO
+    static void configureDatabase(String[] createStatements) throws ResponseException, DataAccessException {
+        DatabaseManager.createDatabase();
+        try (var conn = DatabaseManager.getConnection()) {
+            for (var statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException | DataAccessException ex) {
+            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }
