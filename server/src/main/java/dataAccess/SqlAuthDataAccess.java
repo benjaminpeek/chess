@@ -1,4 +1,4 @@
-package dataAccess.SQL;
+package dataAccess;
 
 public class SqlAuthDataAccess {
 }
