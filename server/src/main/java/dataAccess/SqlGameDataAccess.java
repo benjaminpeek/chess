@@ -7,6 +7,7 @@ import dataAccess.interfaces.GameDataAccess;
 import model.GameData;
 import java.sql.SQLException;
 import java.util.Collection;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class SqlGameDataAccess implements GameDataAccess {
     String[] createStatements = {
@@ -40,11 +41,12 @@ public class SqlGameDataAccess implements GameDataAccess {
     @Override
     public int createGame(String gameName) throws DataAccessException {
         ChessGame newGame = new ChessGame();
+        newGame.getBoard().resetBoard();
         String jsonGame = new Gson().toJson(newGame);
 
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "INSERT INTO games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?);";
-            try (var ps = conn.prepareStatement(statement)) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 ps.setString(1, null);
                 ps.setString(2, null);
                 ps.setString(3, gameName);
@@ -66,7 +68,7 @@ public class SqlGameDataAccess implements GameDataAccess {
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id FROM games WHERE id=?;";
+            var statement = "SELECT * FROM games WHERE id=?;";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
