@@ -9,8 +9,7 @@ public record GameData (
         String whiteUsername,
         String blackUsername,
         String gameName,
-        ChessGame game,
-        Collection<AuthData> spectators
+        ChessGame game
 ) {
     public record SerializedGame(
             int gameID,

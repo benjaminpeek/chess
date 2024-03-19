@@ -38,7 +38,7 @@ public class MemoryGameDataAccess implements GameDataAccess {
     public int createGame(String gameName) {
         incrementNewGameID();
         gameDataMap.put(this.newGameID, new GameData(this.newGameID, null, null, gameName,
-                new ChessGame(), new HashSet<>()));
+                new ChessGame()));
         return this.newGameID;
     }
 
@@ -53,18 +53,11 @@ public class MemoryGameDataAccess implements GameDataAccess {
         AuthData user = this.authDataAccess.getAuth(authToken);
         if (clientColor.equals("WHITE")) {
             this.gameDataMap.put(gameID, new GameData(gameID, user.username(), game.blackUsername(), game.gameName(),
-                    game.game(), game.spectators()));
+                    game.game()));
         } else if (clientColor.equals("BLACK")) {
             this.gameDataMap.put(gameID, new GameData(gameID, game.whiteUsername(), user.username(), game.gameName(),
-                    game.game(), game.spectators()));
+                    game.game()));
         }
-    }
-
-    @Override
-    public void addSpectator(int gameID, String authToken) throws DataAccessException {
-        GameData game = this.gameDataMap.get(gameID);
-        AuthData userAuth = this.authDataAccess.getAuth(authToken);
-        game.spectators().add(userAuth);
     }
 
     @Override
