@@ -1,6 +1,5 @@
 package serviceTests;
 
-import chess.ChessGame;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
