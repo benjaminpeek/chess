@@ -37,8 +37,8 @@ public class SqlGameDataAccess implements GameDataAccess {
     }
 
     @Override
-    public Collection<GameData.SerializedGame> listGames() throws DataAccessException {
-        HashSet<GameData.SerializedGame> allGames = new HashSet<>();
+    public Collection<GameData> listGames() throws DataAccessException {
+        HashSet<GameData> allGames = new HashSet<>();
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM games;";
             try (var ps = conn.prepareStatement(statement)) {
@@ -46,10 +46,16 @@ public class SqlGameDataAccess implements GameDataAccess {
                     // while there is another result
                     // add game to collection
                     while (rs.next()) {
-                        String jsonGame = rs.getString("game");
-                        GameData.SerializedGame game = new Gson().fromJson(jsonGame, GameData.SerializedGame.class);
+                        int resGameID = rs.getInt(1);
+                        String resWhiteUsername = rs.getString(2);
+                        String resBlackUsername = rs.getString(3);
+                        String resGameName = rs.getString(4);
+
+                        String jsonGame = rs.getString(5);
+                        ChessGame resGame = new Gson().fromJson(jsonGame, ChessGame.class);
+
+                        GameData game = new GameData(resGameID, resWhiteUsername, resBlackUsername, resGameName, resGame);
                         allGames.add(game);
-                        rs.next();
                     }
                     return allGames;
                 }

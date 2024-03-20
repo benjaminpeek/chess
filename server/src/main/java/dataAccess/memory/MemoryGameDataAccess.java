@@ -23,12 +23,12 @@ public class MemoryGameDataAccess implements GameDataAccess {
 
 
     @Override
-    public Collection<GameData.SerializedGame> listGames() {
-        // turn all games from data access to a serializable game, and return them in a collection
-        HashSet<GameData.SerializedGame> allGames = new HashSet<>();
+    public Collection<GameData> listGames() {
+        // turn all games from data access to a GameData, and return them in a collection
+        HashSet<GameData> allGames = new HashSet<>();
         for (GameData gameData : this.gameDataMap.values()) {
-            allGames.add(new GameData.SerializedGame(gameData.gameID(), gameData.whiteUsername(),
-                    gameData.blackUsername(), gameData.gameName()));
+            allGames.add(new GameData(gameData.gameID(), gameData.whiteUsername(),
+                    gameData.blackUsername(), gameData.gameName(), gameData.game()));
         }
 
         return allGames;

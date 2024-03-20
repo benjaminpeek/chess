@@ -1,5 +1,6 @@
 package serviceTests;
 
+import chess.ChessGame;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
@@ -41,8 +42,8 @@ class GameServiceTest {
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
         gameService.createGameService(new CreateGameRequest("goodGame"), authToken);
 
-        GameData.SerializedGame game = new GameData.SerializedGame(1, null, null,
-                "goodGame");
+        GameData game = new GameData(1, null, null,
+                "goodGame", gameDataAccess.listGames().iterator().next().game());
         assertTrue(gameDataAccess.listGames().contains(game));
     }
 
@@ -81,17 +82,17 @@ class GameServiceTest {
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
         gameService.createGameService(new CreateGameRequest("gotham"), authToken);
 
-        Collection<GameData.SerializedGame> games = gameDataAccess.listGames();
-        GameData.SerializedGame game = new GameData.SerializedGame(1, null, null,
-                "gotham");
+        Collection<GameData> games = gameDataAccess.listGames();
+        GameData game = new GameData(1, null, null,
+                "gotham", games.iterator().next().game());
 
         assertTrue(games.contains(game));
         gameService.joinGameService(new JoinGameRequest("WHITE", 1), authToken);
 
-        GameData.SerializedGame updatedGame = new GameData.SerializedGame(1, "batman", null,
-                "gotham");
+        GameData updatedGame = new GameData(1, "batman", null,
+                "gotham", games.iterator().next().game());
 
-        Collection<GameData.SerializedGame> updatedGames = gameDataAccess.listGames();
+        Collection<GameData> updatedGames = gameDataAccess.listGames();
         assertTrue(updatedGames.contains(updatedGame));
     }
 

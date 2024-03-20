@@ -29,7 +29,7 @@ public class GameService {
             throw new UnauthorizedException("Error: unauthorized");
         }
 
-        Collection<GameData.SerializedGame> allGames = this.gameDataAccess.listGames();
+        Collection<GameData> allGames = this.gameDataAccess.listGames();
         return new ListGamesResponse(allGames);
     }
 

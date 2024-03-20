@@ -5,5 +5,5 @@ import model.GameData;
 import java.util.Collection;
 
 public record ListGamesResponse(
-        Collection<GameData.SerializedGame> games
+        Collection<GameData> games
 ) {}
