@@ -68,11 +68,9 @@ public class SqlAuthDataAccess implements AuthDataAccess {
                     if (rs.next()) {
                         resAuthToken = rs.getString("authToken");
                         resUsername = rs.getString("username");
-                    } else {
-                        return null;
+                        return new AuthData(resAuthToken, resUsername);
                     }
-
-                    return new AuthData(resAuthToken, resUsername);
+                    return null;
                 }
             }
         } catch (SQLException | DataAccessException e) {
