@@ -99,11 +99,11 @@ public class SqlGameDataAccess implements GameDataAccess {
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
-                    int resGameID = -1;
-                    String resWhiteUsername = null;
-                    String resBlackUsername = null;
-                    String resGameName = null;
-                    ChessGame resGame = null;
+                    int resGameID;
+                    String resWhiteUsername;
+                    String resBlackUsername;
+                    String resGameName;
+                    ChessGame resGame;
                     if (rs.next()) {
                         resGameID = rs.getInt("id");
                         resWhiteUsername = rs.getString("whiteUsername");
@@ -112,9 +112,10 @@ public class SqlGameDataAccess implements GameDataAccess {
 
                         String resGameJson = rs.getString("game");
                         resGame = new Gson().fromJson(resGameJson, ChessGame.class);
-                    }
 
-                    return new GameData(resGameID, resWhiteUsername, resBlackUsername, resGameName, resGame);
+                        return new GameData(resGameID, resWhiteUsername, resBlackUsername, resGameName, resGame);
+                    }
+                    return null;
                 }
             }
         } catch (SQLException | DataAccessException e) {
@@ -135,7 +136,10 @@ public class SqlGameDataAccess implements GameDataAccess {
                 AuthData user = this.authDataAccess.getAuth(authToken);
                 ps.setString(1, user.username());
                 ps.setInt(2, gameID);
-                ps.executeUpdate();
+
+                if (getGame(gameID) != null) {
+                    ps.executeUpdate();
+                }
             }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(e.getMessage());

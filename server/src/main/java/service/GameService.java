@@ -54,6 +54,7 @@ public class GameService {
         if (this.authDataAccess.getAuth(authToken) == null) {
             throw new UnauthorizedException("Error: unauthorized");
         }
+
         if ("WHITE".equals(joinGameRequest.playerColor())) {
             if (this.gameDataAccess.getGame(joinGameRequest.gameID()).whiteUsername() != null) {
                 throw new AlreadyTakenException("Error: already taken");
@@ -69,7 +70,6 @@ public class GameService {
             // add the caller as a spectator to the game
             return new JoinGameResponse("joined game as spectator");
         }
-
         if (!joinGameRequest.playerColor().equals("WHITE") && !joinGameRequest.playerColor().equals("BLACK")) {
             throw new BadRequestException("Error: bad request");
         }
