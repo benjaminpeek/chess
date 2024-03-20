@@ -40,11 +40,11 @@ public class SqlUserDataAccess implements UserDataAccess {
                         resUsername = rs.getString("username");
                         resPassword = rs.getString("password");
                         resEmail = rs.getString("email");
-                    } else {
-                        return null;
+
+                        return new UserData(resUsername, resPassword, resEmail);
                     }
 
-                    return new UserData(resUsername, resPassword, resEmail);
+                    return null;
                 }
             }
         } catch (SQLException | DataAccessException e) {
