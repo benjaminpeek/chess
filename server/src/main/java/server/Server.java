@@ -3,11 +3,11 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.SqlAuthDataAccess;
+import dataAccess.SqlGameDataAccess;
 import dataAccess.SqlUserDataAccess;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
 import dataAccess.interfaces.UserDataAccess;
-import dataAccess.memory.MemoryGameDataAccess;
 import exceptions.AlreadyTakenException;
 import exceptions.BadRequestException;
 import exceptions.UnauthorizedException;
@@ -31,7 +31,7 @@ public class Server {
         // prepare the data access points
         UserDataAccess userDataAccess = new SqlUserDataAccess();
         AuthDataAccess authDataAccess = new SqlAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess(authDataAccess);
+        GameDataAccess gameDataAccess = new SqlGameDataAccess(authDataAccess);
 
 
         // prepare the services
