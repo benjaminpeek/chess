@@ -63,8 +63,12 @@ public class SqlAuthDataAccess implements AuthDataAccess {
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
                 try (var rs = ps.executeQuery()) {
-                    String resAuthToken = rs.getString("authToken");
-                    String resUsername = rs.getString("username");
+                    String resAuthToken = null;
+                    String resUsername = null;
+                    if (rs.next()) {
+                        resAuthToken = rs.getString("authToken");
+                        resUsername = rs.getString("username");
+                    }
 
                     return new AuthData(resAuthToken, resUsername);
                 }
