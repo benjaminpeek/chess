@@ -33,9 +33,16 @@ public class SqlUserDataAccess implements UserDataAccess {
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
                 try (var rs = ps.executeQuery()) {
-                    String resUsername = rs.getString("username");
-                    String resPassword = rs.getString("password");
-                    String resEmail = rs.getString("email");
+                    String resUsername;
+                    String resPassword;
+                    String resEmail;
+                    if (rs.next()) {
+                        resUsername = rs.getString("username");
+                        resPassword = rs.getString("password");
+                        resEmail = rs.getString("email");
+                    } else {
+                        return null;
+                    }
 
                     return new UserData(resUsername, resPassword, resEmail);
                 }
