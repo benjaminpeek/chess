@@ -70,7 +70,7 @@ public class SqlUserDataAccess implements UserDataAccess {
 
     @Override
     public void clearUsers() throws DataAccessException {
-        var statement = "DROP table users;";
+        var statement = "TRUNCATE table users;";
         try (var conn = DatabaseManager.getConnection()) {
             try (var  ps = conn.prepareStatement(statement)) {
                 ps.executeUpdate();

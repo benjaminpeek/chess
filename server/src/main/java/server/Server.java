@@ -58,18 +58,23 @@ public class Server {
         Spark.exception(DataAccessException.class, (e, request, response) -> {
             response.status(500);
             response.body(new Gson().toJson(Map.of("message", e.getMessage())));
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         });
         Spark.exception(AlreadyTakenException.class, (e, request, response) -> {
             response.status(403);
             response.body(new Gson().toJson(Map.of("message", e.getMessage())));
+            System.out.println(e.getMessage());
         });
         Spark.exception(BadRequestException.class, (e, request, response) -> {
             response.status(400);
             response.body(new Gson().toJson(Map.of("message", e.getMessage())));
+            System.out.println(e.getMessage());
         });
         Spark.exception(UnauthorizedException.class, (e, request, response) -> {
             response.status(401);
             response.body(new Gson().toJson(Map.of("message", e.getMessage())));
+            System.out.println(e.getMessage());
         });
 
         Spark.awaitInitialization();

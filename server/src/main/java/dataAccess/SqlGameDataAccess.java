@@ -49,6 +49,7 @@ public class SqlGameDataAccess implements GameDataAccess {
                         String jsonGame = rs.getString("game");
                         GameData.SerializedGame game = new Gson().fromJson(jsonGame, GameData.SerializedGame.class);
                         allGames.add(game);
+                        rs.next();
                     }
                     return allGames;
                 }
@@ -92,13 +93,20 @@ public class SqlGameDataAccess implements GameDataAccess {
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
-                    int resGameID = rs.getInt("id");
-                    String resWhiteUsername = rs.getString("whiteUsername");
-                    String resBlackUsername = rs.getString("blackUsername");
-                    String resGameName = rs.getString("gameName");
+                    int resGameID = -1;
+                    String resWhiteUsername = null;
+                    String resBlackUsername = null;
+                    String resGameName = null;
+                    ChessGame resGame = null;
+                    if (rs.next()) {
+                        resGameID = rs.getInt("id");
+                        resWhiteUsername = rs.getString("whiteUsername");
+                        resBlackUsername = rs.getString("blackUsername");
+                        resGameName = rs.getString("gameName");
 
-                    String resGameJson = rs.getString("game");
-                    ChessGame resGame = new Gson().fromJson(resGameJson, ChessGame.class);
+                        String resGameJson = rs.getString("game");
+                        resGame = new Gson().fromJson(resGameJson, ChessGame.class);
+                    }
 
                     return new GameData(resGameID, resWhiteUsername, resBlackUsername, resGameName, resGame);
                 }
@@ -130,7 +138,7 @@ public class SqlGameDataAccess implements GameDataAccess {
 
     @Override
     public void clearGames() throws DataAccessException {
-        var statement = "DROP table games;";
+        var statement = "TRUNCATE table games;";
         try (var conn = DatabaseManager.getConnection()) {
             try (var  ps = conn.prepareStatement(statement)) {
                 ps.executeUpdate();
