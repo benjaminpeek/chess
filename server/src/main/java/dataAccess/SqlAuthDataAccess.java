@@ -82,7 +82,7 @@ public class SqlAuthDataAccess implements AuthDataAccess {
 
     @Override
     public void clearAuths() throws DataAccessException {
-        var statement = "TRUNCATE table auths;";
+        var statement = "DROP table auths;";
         try (var conn = DatabaseManager.getConnection()) {
             try (var  ps = conn.prepareStatement(statement)) {
                 ps.executeUpdate();

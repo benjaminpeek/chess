@@ -17,8 +17,8 @@ public class SqlGameDataAccess implements GameDataAccess {
             """
             CREATE TABLE IF NOT EXISTS games (
               `id` int NOT NULL AUTO_INCREMENT,
-              `whiteUsername` varchar(256) NOT NULL,
-              `blackUsername` varchar(256) NOT NULL,
+              `whiteUsername` varchar(256),
+              `blackUsername` varchar(256),
               `gameName` varchar(256) NOT NULL,
               `game` TEXT NOT NULL,
               PRIMARY KEY (`id`)
@@ -73,10 +73,10 @@ public class SqlGameDataAccess implements GameDataAccess {
                 ps.setString(4, jsonGame);
 
                 ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
+                try (var rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
                 }
             }
         } catch (SQLException | DataAccessException e) {
@@ -130,7 +130,7 @@ public class SqlGameDataAccess implements GameDataAccess {
 
     @Override
     public void clearGames() throws DataAccessException {
-        var statement = "TRUNCATE table games;";
+        var statement = "DROP table games;";
         try (var conn = DatabaseManager.getConnection()) {
             try (var  ps = conn.prepareStatement(statement)) {
                 ps.executeUpdate();
