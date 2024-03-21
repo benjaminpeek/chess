@@ -44,4 +44,12 @@ public class SqlAuthDataAccessTests {
     void getAuthBadAuth() throws DataAccessException {
         assertNull(authDAO.getAuth("non-existent"));
     }
+
+    @Test
+    void clearAuthsTest() throws DataAccessException {
+        String authToken = authDAO.createAuth("ben");
+        assertEquals(authToken, authDAO.getAuth(authToken).authToken());
+        authDAO.clearAuths();
+        assertNull(authDAO.getAuth(authToken));
+    }
 }
