@@ -22,12 +22,26 @@ public class SqlAuthDataAccessTests {
     }
 
     @Test
-    void createAuthFails() throws DataAccessException {
+    void createAuthFails() {
         assertThrows(DataAccessException.class, () -> authDAO.createAuth(null));
     }
 
     @Test
     void deleteAuthSuccess() throws DataAccessException {
         String authToken = authDAO.createAuth("ben");
+        assertEquals(authToken, authDAO.getAuth(authToken).authToken());
+        authDAO.deleteAuth(authToken);
+        assertNull(authDAO.getAuth(authToken));
+    }
+
+    @Test
+    void getAuthSuccess() throws DataAccessException {
+        String authToken = authDAO.createAuth("ben");
+        assertEquals(authToken, authDAO.getAuth(authToken).authToken());
+    }
+
+    @Test
+    void getAuthBadAuth() throws DataAccessException {
+        assertNull(authDAO.getAuth("non-existent"));
     }
 }
