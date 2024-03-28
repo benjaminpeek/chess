@@ -59,7 +59,6 @@ public class Server {
             response.status(500);
             response.body(new Gson().toJson(Map.of("message", e.getMessage())));
             System.out.println(e.getMessage());
-            e.printStackTrace();
         });
         Spark.exception(AlreadyTakenException.class, (e, request, response) -> {
             response.status(403);
