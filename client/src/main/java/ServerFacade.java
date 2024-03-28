@@ -1,5 +1,7 @@
 import com.google.gson.Gson;
 import exceptions.ResponseException;
+import request.RegisterRequest;
+import response.RegisterResponse;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -8,13 +10,17 @@ import java.net.URL;
 
 public class ServerFacade {
     private final String serverUrl;
+    private static String authToken;
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
     }
 
 
-
+    public RegisterResponse register(RegisterRequest req) throws ResponseException {
+        var path = "/user";
+        return this.makeRequest("POST", path, req, RegisterResponse.class);
+    }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {

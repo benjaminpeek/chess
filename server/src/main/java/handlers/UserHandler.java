@@ -21,7 +21,7 @@ public class UserHandler {
     }
 
     public String registerHandler(Request req, Response res) throws BadRequestException, AlreadyTakenException,
-            DataAccessException, UnauthorizedException {
+            DataAccessException {
         // take in the HTTP JSON request, turn it into a RegisterRequest object
         RegisterRequest registerRequest = new Gson().fromJson(req.body(), RegisterRequest.class);
         // use the appropriate service's method
