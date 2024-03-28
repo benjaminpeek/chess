@@ -1,7 +1,10 @@
 import com.google.gson.Gson;
 import exceptions.ResponseException;
+import request.CreateGameRequest;
+import request.JoinGameRequest;
+import request.LoginRequest;
 import request.RegisterRequest;
-import response.RegisterResponse;
+import response.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,9 +20,39 @@ public class ServerFacade {
     }
 
 
+//    public void clear() throws ResponseException {
+//        var path = "/db";
+//        this.makeRequest("DELETE", path, null, ClearApplicationResponse.class);
+//    }
+
     public RegisterResponse register(RegisterRequest req) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", path, req, RegisterResponse.class);
+    }
+
+    public LoginResponse login(LoginRequest req) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, req, LoginResponse.class);
+    }
+
+    public LogoutResponse login(LogoutResponse req) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("DELETE", path, req, LogoutResponse.class);
+    }
+
+    public ListGamesResponse listGames(String authToken) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("GET", path, authToken, ListGamesResponse.class);
+    }
+
+    public CreateGameResponse createGame(CreateGameRequest req) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, req, CreateGameResponse.class);
+    }
+
+    public JoinGameResponse joinGame(JoinGameRequest req) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("PUT", path, req, JoinGameResponse.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
