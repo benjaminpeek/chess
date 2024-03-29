@@ -1,3 +1,5 @@
+package serverFacade;
+
 import com.google.gson.Gson;
 import exceptions.ResponseException;
 import request.CreateGameRequest;
@@ -20,14 +22,16 @@ public class ServerFacade {
     }
 
 
-//    public void clear() throws ResponseException {
-//        var path = "/db";
-//        this.makeRequest("DELETE", path, null, ClearApplicationResponse.class);
-//    }
+    public void clear() throws ResponseException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, ClearApplicationResponse.class);
+    }
 
     public RegisterResponse register(RegisterRequest req) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, req, RegisterResponse.class);
+        RegisterResponse madeReq = this.makeRequest("POST", path, req, RegisterResponse.class);
+        authToken = madeReq.authToken();
+        return madeReq;
     }
 
     public LoginResponse login(LoginRequest req) throws ResponseException {
@@ -35,9 +39,9 @@ public class ServerFacade {
         return this.makeRequest("POST", path, req, LoginResponse.class);
     }
 
-    public LogoutResponse login(LogoutResponse req) throws ResponseException {
+    public LogoutResponse logout() throws ResponseException {
         var path = "/session";
-        return this.makeRequest("DELETE", path, req, LogoutResponse.class);
+        return this.makeRequest("DELETE", path, authToken, LogoutResponse.class);
     }
 
     public ListGamesResponse listGames(String authToken) throws ResponseException {
