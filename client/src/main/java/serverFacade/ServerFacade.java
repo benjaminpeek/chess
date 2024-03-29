@@ -2,10 +2,7 @@ package serverFacade;
 
 import com.google.gson.Gson;
 import exceptions.ResponseException;
-import request.CreateGameRequest;
-import request.JoinGameRequest;
-import request.LoginRequest;
-import request.RegisterRequest;
+import request.*;
 import response.*;
 
 import java.io.*;
