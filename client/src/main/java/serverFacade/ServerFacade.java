@@ -22,6 +22,7 @@ public class ServerFacade {
     }
 
 
+    // method used only for testing
     public void clear() throws ResponseException {
         var path = "/db";
         this.makeRequest("DELETE", path, null, ClearApplicationResponse.class);
