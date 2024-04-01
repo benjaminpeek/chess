@@ -22,8 +22,10 @@ public class PostLogin implements UI {
             return switch (cmd) {
                 case "creategame" -> createGame(params);
                 case "joingame" -> joinGame(params);
+//                case "observe" -> observeGame(params);
 //                case "listgames" -> listGames(params);
 //                case "logout" -> logout();
+//                case "clear" -> clear();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -34,11 +36,15 @@ public class PostLogin implements UI {
 
     public String createGame(String... params) throws ResponseException {
         if (params.length >= 1) {
-            String gameName = params[0];
+            StringBuilder gameName = new StringBuilder(params[0]);
+            for (int i = 1; i < params.length; i++) {
+                gameName.append(" ");
+                gameName.append(params[i]);
+            }
             serverFacade.createGame(new CreateGameRequest(params[0]));
-            return String.format("Created new game: %s.", gameName);
+            return String.format("Created new game: %s", gameName);
         }
-        throw new ResponseException(400, "Expected: <gameName>");
+        throw new ResponseException(400, "Expected: <game name>");
     }
 
     public String joinGame(String... params) throws ResponseException {
@@ -48,8 +54,16 @@ public class PostLogin implements UI {
             serverFacade.joinGame(new JoinGameRequest(playerColor, Integer.parseInt(gameID)));
             return String.format("Joined game %s as %s", gameID, playerColor);
         }
-        throw new ResponseException(400, "Expected: <gameName>");
+        throw new ResponseException(400, "Expected: <playerColor: WHITE or BLACK> <game ID>");
     }
+
+//    public String clear(String... params) throws ResponseException {
+//        if (params.length == 0) {
+//            serverFacade.clear();
+//            return "cleared database";
+//        }
+//        throw new ResponseException(400, "Expected: <nothing>");
+//    }
 
     @Override
     public String help() {
