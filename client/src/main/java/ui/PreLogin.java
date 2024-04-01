@@ -1,5 +1,6 @@
 package ui;
 
+import clientRepl.Repl;
 import exceptions.ResponseException;
 import request.LoginRequest;
 import request.RegisterRequest;
@@ -7,11 +8,15 @@ import serverFacade.ServerFacade;
 
 import java.util.Arrays;
 
+import static visual.EscapeSequences.*;
+
 public class PreLogin implements UI {
     private String username;
+    private final String serverUrl;
     private final ServerFacade serverFacade;
     public PreLogin(String serverUrl) {
         this.serverFacade = new ServerFacade(serverUrl);
+        this.serverUrl = serverUrl;
     }
 
 
@@ -34,7 +39,7 @@ public class PreLogin implements UI {
 
     public String register(String... params) throws ResponseException {
         if (params.length >= 2) {
-            username = String.join("-", params);
+            username = params[0];
             serverFacade.register(new RegisterRequest(params[0], params[1], params[2]));
             return String.format("You registered as %s.", username);
         }
@@ -43,9 +48,17 @@ public class PreLogin implements UI {
 
     public String login(String... params) throws ResponseException {
         if (params.length >= 1) {
-            username = String.join("-", params);
-            serverFacade.login(new LoginRequest(params[0], params[1]));
-            return String.format("You signed in as %s.", username);
+            username = params[0];
+            // change the "state" to logged in
+            try {
+                serverFacade.login(new LoginRequest(params[0], params[1]));
+                Repl.currentUI = new PostLogin(serverUrl);
+                System.out.print(RESET_TEXT_COLOR);
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+            System.out.print(Repl.currentUI.help());
+            return String.format("WELCOME, %s!", username);
         }
         throw new ResponseException(400, "Expected: <username> <password>");
     }
@@ -53,8 +66,10 @@ public class PreLogin implements UI {
     @Override
     public String help() {
         return """
-             - login <username> <password>
-             - quit
+             - register - register a new user with <username> <password> <email>
+             - login - log an existing user in with <username> <password>
+             - quit - exit the program
+             - help - explains what each command does
              """;
     }
 }

@@ -8,14 +8,14 @@ import java.util.Scanner;
 import static visual.EscapeSequences.*;
 
 public class Repl {
-    private final UI currentUI;
+    public static UI currentUI;
 
     public Repl(String serverUrl) {
-        this.currentUI = new PreLogin(serverUrl);
+        currentUI = new PreLogin(serverUrl);
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 Welcome to chess. Please register or login to begin.");
+        System.out.println(WHITE_KING + "Welcome to Chess. Please register or login to begin.");
         System.out.print(currentUI.help());
 
         Scanner scanner = new Scanner(System.in);
