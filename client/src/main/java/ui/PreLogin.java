@@ -10,11 +10,7 @@ import java.util.Arrays;
 public class PreLogin implements UI {
     private String username;
     private final ServerFacade serverFacade;
-    private final String serverUrl;
-    private State state = State.LOGGED_OUT;
-
     public PreLogin(String serverUrl) {
-        this.serverUrl = serverUrl;
         this.serverFacade = new ServerFacade(serverUrl);
     }
 
@@ -47,7 +43,6 @@ public class PreLogin implements UI {
 
     public String login(String... params) throws ResponseException {
         if (params.length >= 1) {
-            state = State.LOGGED_IN;
             username = String.join("-", params);
             serverFacade.login(new LoginRequest(params[0], params[1]));
             return String.format("You signed in as %s.", username);
@@ -57,6 +52,9 @@ public class PreLogin implements UI {
 
     @Override
     public String help() {
-        return null;
+        return """
+             - login <username> <password>
+             - quit
+             """;
     }
 }
