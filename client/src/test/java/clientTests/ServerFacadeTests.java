@@ -2,6 +2,8 @@ package clientTests;
 
 import exceptions.ResponseException;
 import org.junit.jupiter.api.*;
+import request.CreateGameRequest;
+import request.JoinGameRequest;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.LoginResponse;
@@ -68,8 +70,54 @@ public class ServerFacadeTests {
     @Test
     public void logoutSuccess() throws ResponseException {
         serverFacade.register(new RegisterRequest("ben", "pass", "ben@gmail"));
-        String authToken = serverFacade.login(new LoginRequest("ben", "pass")).authToken();
+        serverFacade.login(new LoginRequest("ben", "pass"));
         serverFacade.logout();
+    }
+
+    @Test
+    public void logoutThrows() {
+        assertThrows(ResponseException.class, () -> serverFacade.logout());
+    }
+
+    @Test
+    public void createGameSuccess() throws ResponseException {
+        serverFacade.register(new RegisterRequest("ben", "pass", "ben@gmail"));
+        serverFacade.createGame(new CreateGameRequest("cool game"));
+    }
+
+    @Test
+    public void createGameThrows() {
+        assertThrows(ResponseException.class, () -> serverFacade.createGame(new CreateGameRequest("fails")));
+    }
+
+    @Test
+    public void joinGameSuccess() throws ResponseException {
+        serverFacade.register(new RegisterRequest("ben", "pass", "ben@gmail"));
+        serverFacade.login(new LoginRequest("ben", "pass"));
+        serverFacade.createGame(new CreateGameRequest("cool game"));
+
+        serverFacade.joinGame(new JoinGameRequest("WHITE", 1));
+    }
+
+    @Test
+    public void joinGameThrows() {
+        assertThrows(ResponseException.class, () -> serverFacade.joinGame(new JoinGameRequest("WHITE", 100)));
+    }
+
+    @Test
+    public void listGamesSuccess() throws ResponseException {
+        serverFacade.register(new RegisterRequest("ben", "pass", "ben@gmail"));
+        serverFacade.login(new LoginRequest("ben", "pass"));
+        for (int i = 1; i < 11; i++) {
+            serverFacade.createGame(new CreateGameRequest("game"+i));
+        }
+
+        System.out.println(serverFacade.listGames());
+    }
+
+    @Test
+    public void listGamesThrows() {
+        assertThrows(ResponseException.class, () -> serverFacade.listGames());
     }
 
 }

@@ -27,7 +27,9 @@ public class ServerFacade {
 
     public RegisterResponse register(RegisterRequest req) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, req, RegisterResponse.class);
+        RegisterResponse madeReq = this.makeRequest("POST", path, req, RegisterResponse.class);
+        authToken = madeReq.authToken();
+        return madeReq;
     }
 
     public LoginResponse login(LoginRequest req) throws ResponseException {
@@ -37,24 +39,24 @@ public class ServerFacade {
         return madeReq;
     }
 
-    public LogoutResponse logout() throws ResponseException {
+    public void logout() throws ResponseException {
         var path = "/session";
-        return this.makeRequest("DELETE", path, authToken, LogoutResponse.class);
+        this.makeRequest("DELETE", path, null, LogoutResponse.class);
     }
 
-    public ListGamesResponse listGames(String authToken) throws ResponseException {
+    public ListGamesResponse listGames() throws ResponseException {
         var path = "/game";
-        return this.makeRequest("GET", path, authToken, ListGamesResponse.class);
+        return this.makeRequest("GET", path, null, ListGamesResponse.class);
     }
 
-    public CreateGameResponse createGame(CreateGameRequest req) throws ResponseException {
+    public void createGame(CreateGameRequest req) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("POST", path, req, CreateGameResponse.class);
+        this.makeRequest("POST", path, req, CreateGameResponse.class);
     }
 
-    public JoinGameResponse joinGame(JoinGameRequest req) throws ResponseException {
+    public void joinGame(JoinGameRequest req) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("PUT", path, req, JoinGameResponse.class);
+        this.makeRequest("PUT", path, req, JoinGameResponse.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
@@ -63,6 +65,7 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            http.setRequestProperty("authorization", authToken);
 
             writeBody(request, http);
             http.connect();
