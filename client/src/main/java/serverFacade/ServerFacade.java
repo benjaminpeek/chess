@@ -27,14 +27,14 @@ public class ServerFacade {
 
     public RegisterResponse register(RegisterRequest req) throws ResponseException {
         var path = "/user";
-        RegisterResponse madeReq = this.makeRequest("POST", path, req, RegisterResponse.class);
-        authToken = madeReq.authToken();
-        return madeReq;
+        return this.makeRequest("POST", path, req, RegisterResponse.class);
     }
 
     public LoginResponse login(LoginRequest req) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, req, LoginResponse.class);
+        LoginResponse madeReq = this.makeRequest("POST", path, req, LoginResponse.class);
+        authToken = madeReq.authToken();
+        return madeReq;
     }
 
     public LogoutResponse logout() throws ResponseException {

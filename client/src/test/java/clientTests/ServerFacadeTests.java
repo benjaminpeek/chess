@@ -68,7 +68,7 @@ public class ServerFacadeTests {
     @Test
     public void logoutSuccess() throws ResponseException {
         serverFacade.register(new RegisterRequest("ben", "pass", "ben@gmail"));
-        serverFacade.login(new LoginRequest("ben", "pass"));
+        String authToken = serverFacade.login(new LoginRequest("ben", "pass")).authToken();
         serverFacade.logout();
     }
 
