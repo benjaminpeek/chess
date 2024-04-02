@@ -6,6 +6,7 @@ import model.GameData;
 import request.CreateGameRequest;
 import request.JoinGameRequest;
 import serverFacade.ServerFacade;
+import visual.DrawBoard;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,9 +17,11 @@ public class PostLogin implements UI {
     private final ServerFacade serverFacade;
     private final String serverUrl;
     private Collection<GameData> serverGames;
-    public PostLogin(String serverUrl) {
+    private DrawBoard drawingBoard;
+    public PostLogin(String serverUrl) throws ResponseException {
         this.serverFacade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.serverGames = this.serverFacade.listGames().games();
     }
 
     @Override
@@ -60,7 +63,17 @@ public class PostLogin implements UI {
         if (params.length >= 1) {
             String gameID = params[1];
             String playerColor = params[0];
-            serverFacade.joinGame(new JoinGameRequest(playerColor.toUpperCase(), Integer.parseInt(gameID)));
+            try {
+                serverFacade.joinGame(new JoinGameRequest(playerColor.toUpperCase(), Integer.parseInt(gameID)));
+                for (GameData game : serverGames) {
+                    if (game.gameID() == Integer.parseInt(gameID)) {
+                        drawingBoard = new DrawBoard(game.game());
+                    }
+                }
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+            drawingBoard.draw();
             return String.format("Joined game %s as %s", gameID, playerColor);
         }
         throw new ResponseException(400, "Expected: <playerColor: WHITE or BLACK> <game ID>");
@@ -69,7 +82,17 @@ public class PostLogin implements UI {
     public String observeGame(String... params) throws ResponseException {
         if (params.length >= 1) {
             String gameID = params[0];
-            serverFacade.joinGame(new JoinGameRequest(null, Integer.parseInt(gameID)));
+            try {
+                serverFacade.joinGame(new JoinGameRequest(null, Integer.parseInt(gameID)));
+                for (GameData game : serverGames) {
+                    if (game.gameID() == Integer.parseInt(gameID)) {
+                        drawingBoard = new DrawBoard(game.game());
+                    }
+                }
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+            drawingBoard.draw();
             return String.format("Joined game %s as an observer", gameID);
         }
         throw new ResponseException(400, "Expected: <game ID>");

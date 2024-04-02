@@ -3,6 +3,8 @@ package visual;
 import chess.ChessBoard;
 import chess.ChessGame;
 
+import static visual.EscapeSequences.*;
+
 public class DrawBoard {
     ChessGame game;
 
@@ -10,13 +12,17 @@ public class DrawBoard {
         this.game = game;
     }
 
-    public StringBuilder draw() {
+    public void draw() {
         ChessBoard board = this.game.getBoard();
 
+        System.out.println(SET_BG_COLOR_BLACK);
+        System.out.println(SET_TEXT_COLOR + "222m");
         // white on bottom
+        for (int i = 1; i < 9; i++) {
+            System.out.println("yeah this lit");
+        }
 
         // black on bottom
 
-        return new StringBuilder();
     }
 }
