@@ -15,6 +15,7 @@ import static visual.EscapeSequences.RESET_TEXT_COLOR;
 public class PostLogin implements UI {
     private final ServerFacade serverFacade;
     private final String serverUrl;
+    private Collection<GameData> serverGames;
     public PostLogin(String serverUrl) {
         this.serverFacade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
@@ -32,7 +33,7 @@ public class PostLogin implements UI {
                 case "observe" -> observeGame(params);
                 case "list" -> listGames(params);
                 case "logout" -> logout();
-                case "clear" -> clear();
+//                case "clear" -> clear();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -49,6 +50,7 @@ public class PostLogin implements UI {
                 gameName.append(params[i]);
             }
             serverFacade.createGame(new CreateGameRequest(params[0]));
+            this.serverGames = serverFacade.listGames().games();
             return String.format("Created new game: %s", gameName);
         }
         throw new ResponseException(400, "Expected: <game name>");
@@ -76,8 +78,8 @@ public class PostLogin implements UI {
     public String listGames(String... params) throws ResponseException {
         if (params.length == 0) {
             StringBuilder gamesString = new StringBuilder();
-            Collection<GameData> allGames = serverFacade.listGames().games();
-            for (GameData gameData : allGames) {
+            this.serverGames = serverFacade.listGames().games();
+            for (GameData gameData : serverGames) {
                 gamesString.append(gameData.toString());
                 gamesString.append("\n");
             }
@@ -101,13 +103,13 @@ public class PostLogin implements UI {
         throw new ResponseException(400, "Failed to logout user");
     }
 
-    public String clear(String... params) throws ResponseException {
-        if (params.length == 0) {
-            serverFacade.clear();
-            return "cleared database";
-        }
-        throw new ResponseException(400, "Expected: <nothing>");
-    }
+//    public String clear(String... params) throws ResponseException {
+//        if (params.length == 0) {
+//            serverFacade.clear();
+//            return "database cleared";
+//        }
+//        throw new ResponseException(400, "Expected: <nothing>");
+//    }
 
     @Override
     public String help() {
