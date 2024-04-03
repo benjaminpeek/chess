@@ -108,16 +108,7 @@ public class DrawBoard {
                 }
             }
         }
-//        for (int i = 1; i < 9; i++) {
-//            ChessPiece piece = board.getPiece(new ChessPosition(row, i));
-//            if (piece != null) {
-//                setTextColor(piece.getTeamColor());
-//                System.out.print(" " + piece.toString().toUpperCase() + " ");
-//            } else {
-//                System.out.print(EMPTY);
-//            }
-//            switchBgColor();
-//        }
+
         System.out.print(SET_BG_COLOR_BLACK);
         System.out.print(SET_TEXT_COLOR + "222m");
         System.out.print(" " + row + " ");
