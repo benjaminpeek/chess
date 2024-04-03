@@ -36,7 +36,6 @@ public class PostLogin implements UI {
                 case "observe" -> observeGame(params);
                 case "list" -> listGames(params);
                 case "logout" -> logout();
-//                case "clear" -> clear();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -127,14 +126,6 @@ public class PostLogin implements UI {
         }
         throw new ResponseException(400, "Failed to logout user");
     }
-
-//    public String clear(String... params) throws ResponseException {
-//        if (params.length == 0) {
-//            serverFacade.clear();
-//            return "database cleared";
-//        }
-//        throw new ResponseException(400, "Expected: <nothing>");
-//    }
 
     @Override
     public String help() {

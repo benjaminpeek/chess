@@ -4,11 +4,11 @@ public class ResponseException extends Exception {
     final private int statusCode;
 
     public ResponseException(int statusCode, String message) {
-        super(message);
+        super(statusCode + ": " + message);
         this.statusCode = statusCode;
     }
 
-    public int StatusCode() {
+    public int statusCode() {
         return statusCode;
     }
 }
