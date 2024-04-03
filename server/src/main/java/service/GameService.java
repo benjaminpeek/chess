@@ -56,12 +56,14 @@ public class GameService {
         }
 
         if ("WHITE".equals(joinGameRequest.playerColor())) {
-            if (this.gameDataAccess.getGame(joinGameRequest.gameID()).whiteUsername() != null) {
+            if (this.gameDataAccess.getGame(joinGameRequest.gameID()).whiteUsername() != null
+                    && !this.gameDataAccess.getGame(joinGameRequest.gameID()).whiteUsername().equals(this.authDataAccess.getAuth(authToken).username())) {
                 throw new AlreadyTakenException("Error: already taken");
             }
         }
         if ("BLACK".equals(joinGameRequest.playerColor())) {
-            if (this.gameDataAccess.getGame(joinGameRequest.gameID()).blackUsername() != null) {
+            if (this.gameDataAccess.getGame(joinGameRequest.gameID()).blackUsername() != null
+                    && !this.gameDataAccess.getGame(joinGameRequest.gameID()).blackUsername().equals(this.authDataAccess.getAuth(authToken).username())) {
                 throw new AlreadyTakenException("Error: already taken");
             }
         }
