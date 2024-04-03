@@ -73,7 +73,8 @@ public class PostLogin implements UI {
             } catch (ResponseException e) {
                 return e.getMessage();
             }
-            drawingBoard.draw();
+            drawingBoard.drawWhite();
+            drawingBoard.drawBlack();
             return String.format("Joined game %s as %s", gameID, playerColor);
         }
         throw new ResponseException(400, "Expected: <playerColor: WHITE or BLACK> <game ID>");
@@ -92,7 +93,8 @@ public class PostLogin implements UI {
             } catch (ResponseException e) {
                 return e.getMessage();
             }
-            drawingBoard.draw();
+            drawingBoard.drawWhite();
+            drawingBoard.drawBlack();
             return String.format("Joined game %s as an observer", gameID);
         }
         throw new ResponseException(400, "Expected: <game ID>");

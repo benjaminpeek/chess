@@ -16,7 +16,7 @@ public class DrawBoard {
         this.game = game;
     }
 
-    public void draw() {
+    public void drawWhite() {
         ChessBoard board = this.game.getBoard();
 
         System.out.print(SET_BG_COLOR_BLACK);
@@ -31,28 +31,40 @@ public class DrawBoard {
         System.out.print(" e ");
         System.out.print(" f ");
         System.out.print(" g ");
-        System.out.println(" h ");
+        System.out.print(" h ");
+        System.out.print(EMPTY);
+        System.out.print(RESET_BG_COLOR);
+        System.out.println();
 
+        System.out.print(SET_BG_COLOR_BLACK);
         System.out.print(" 8 ");
         bgColor = SET_BG_COLOR + "222m";
         System.out.print(bgColor);
-        textColor = SET_TEXT_COLOR_BLACK;
-        System.out.print(textColor);
         for (int i = 1; i < 9; i++) {
             ChessPiece piece = board.getPiece(new ChessPosition(8, i));
             setTextColor(piece.getTeamColor());
-            System.out.println(" " + "" + " ");
+            System.out.print(" " + piece + " ");
+            switchBgColor();
         }
+        System.out.print(SET_BG_COLOR_BLACK);
+        System.out.print(SET_TEXT_COLOR + "222m");
+        System.out.print(" 8 ");
+        System.out.print(RESET_BG_COLOR);
 
         System.out.println();
     }
 
+    public void drawBlack() {
+
+    }
+
     private void switchBgColor() {
-        if (bgColor.equals(SET_BG_COLOR_BLACK)) {
-            bgColor = SET_BG_COLOR_WHITE;
-        } else if (bgColor.equals(SET_BG_COLOR_WHITE)) {
-            bgColor = SET_BG_COLOR_BLACK;
+        if (bgColor.equals(SET_BG_COLOR + "222m")) {
+            bgColor = SET_BG_COLOR + "95m";
+        } else if (bgColor.equals(SET_BG_COLOR + "95m")) {
+            bgColor = SET_BG_COLOR + "222m";
         }
+        System.out.print(bgColor);
     }
 
     private void setTextColor(ChessGame.TeamColor color) {
@@ -61,5 +73,6 @@ public class DrawBoard {
         } else if (color == ChessGame.TeamColor.BLACK) {
             textColor = SET_TEXT_COLOR_BLACK;
         }
+        System.out.print(textColor);
     }
 }
