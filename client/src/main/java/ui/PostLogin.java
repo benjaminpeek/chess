@@ -10,8 +10,9 @@ import visual.DrawBoard;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
-import static visual.EscapeSequences.RESET_TEXT_COLOR;
+import static visual.EscapeSequences.*;
 
 public class PostLogin implements UI {
     private final ServerFacade serverFacade;
@@ -103,8 +104,26 @@ public class PostLogin implements UI {
         if (params.length == 0) {
             StringBuilder gamesString = new StringBuilder();
             this.serverGames = serverFacade.listGames().games();
-            for (GameData gameData : serverGames) {
-                gamesString.append(gameData.toString());
+            Iterator<GameData> itr = serverGames.iterator();
+            for (int i = 1; i <= serverGames.size(); i++) {
+                GameData gameData = itr.next();
+
+                gamesString.append(SET_TEXT_BOLD);
+                gamesString.append(SET_TEXT_UNDERLINE);
+                gamesString.append(SET_TEXT_COLOR_GREEN);
+                gamesString.append("GAME ").append(i).append(":").append("\n");
+                gamesString.append(SET_TEXT_COLOR_BLUE);
+                gamesString.append(RESET_TEXT_BOLD_FAINT);
+                gamesString.append(RESET_TEXT_UNDERLINE);
+
+                gamesString.append("Game ID: ").append(gameData.gameID());
+                gamesString.append("\n");
+                gamesString.append("White username: ").append(gameData.whiteUsername());
+                gamesString.append("\n");
+                gamesString.append("Black username: ").append(gameData.blackUsername());
+                gamesString.append("\n");
+                gamesString.append("Game name: ").append(gameData.gameName());
+                gamesString.append("\n");
                 gamesString.append("\n");
             }
             return gamesString.toString();
