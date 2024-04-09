@@ -2,12 +2,14 @@ package clientRepl;
 
 import ui.PreLogin;
 import ui.UI;
+import webSocket.NotificationHandler;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.Scanner;
 
 import static visual.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements NotificationHandler {
     public static UI currentUI;
 
     public Repl(String serverUrl) {
@@ -33,6 +35,12 @@ public class Repl {
             }
         }
         System.out.println();
+    }
+
+    @Override
+    public void notify(ServerMessage notification) {
+        System.out.println(SET_TEXT_COLOR_RED + notification.getServerMessageType());
+        printPrompt();
     }
 
     private void printPrompt() {
