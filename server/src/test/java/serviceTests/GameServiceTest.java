@@ -98,6 +98,7 @@ class GameServiceTest {
     @Test
     void joinGameServiceThrowsAlreadyTaken() throws DataAccessException, UnauthorizedException, BadRequestException, AlreadyTakenException {
         String authToken = authDataAccess.createAuth("jack sparrow");
+        String otherAuthToken = authDataAccess.createAuth("will");
 
         GameService gameService = new GameService(gameDataAccess, authDataAccess);
         gameService.createGameService(new CreateGameRequest("black pearl"), authToken);
@@ -105,6 +106,6 @@ class GameServiceTest {
         gameService.joinGameService(new JoinGameRequest("BLACK", 1), authToken);
 
         assertThrows(AlreadyTakenException.class, () -> gameService.joinGameService(new JoinGameRequest("BLACK",
-                1), authToken));
+                1), otherAuthToken));
     }
 }
