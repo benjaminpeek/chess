@@ -11,7 +11,6 @@ import java.util.Arrays;
 import static visual.EscapeSequences.*;
 
 public class PreLogin implements UI {
-    private String username;
     private final String serverUrl;
     private final ServerFacade serverFacade;
 
@@ -40,26 +39,27 @@ public class PreLogin implements UI {
 
     public String register(String... params) throws ResponseException {
         if (params.length >= 2) {
-            username = params[0];
+            Repl.username = params[0];
             serverFacade.register(new RegisterRequest(params[0], params[1], params[2]));
-            return String.format("You registered as %s.", username);
+            return String.format("You registered as %s.", Repl.username);
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
     }
 
     public String login(String... params) throws ResponseException {
         if (params.length >= 1) {
-            username = params[0];
+            Repl.username = params[0];
             // change the "state" to logged in
             try {
                 serverFacade.login(new LoginRequest(params[0], params[1]));
                 Repl.currentUI = new PostLogin(serverUrl);
+                Repl.username = params[0];
                 System.out.print(RESET_TEXT_COLOR);
             } catch (ResponseException e) {
                 return e.getMessage();
             }
             System.out.print(Repl.currentUI.help());
-            return String.format("WELCOME, %s!", username);
+            return String.format("WELCOME, %s!", Repl.username);
         }
         throw new ResponseException(400, "Expected: <username> <password>");
     }

@@ -11,9 +11,12 @@ import static visual.EscapeSequences.*;
 
 public class Repl implements NotificationHandler {
     public static UI currentUI;
+    public static String username;
+    public static NotificationHandler notificationHandler;
 
     public Repl(String serverUrl) {
         currentUI = new PreLogin(serverUrl);
+        notificationHandler = this;
     }
 
     public void run() {

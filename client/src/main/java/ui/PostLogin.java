@@ -65,6 +65,7 @@ public class PostLogin implements UI {
             String playerColor = params[0];
             try {
                 serverFacade.joinGame(new JoinGameRequest(playerColor.toUpperCase(), Integer.parseInt(gameID)));
+                Repl.currentUI = new Gameplay(serverUrl);
                 for (GameData game : serverGames) {
                     if (game.gameID() == Integer.parseInt(gameID)) {
                         drawingBoard = new DrawBoard(game.game());
