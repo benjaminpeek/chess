@@ -14,9 +14,10 @@ public class PreLogin implements UI {
     private String username;
     private final String serverUrl;
     private final ServerFacade serverFacade;
+
     public PreLogin(String serverUrl) {
-        this.serverFacade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.serverFacade = new ServerFacade(serverUrl);
     }
 
 

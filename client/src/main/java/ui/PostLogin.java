@@ -15,8 +15,8 @@ import java.util.Iterator;
 import static visual.EscapeSequences.*;
 
 public class PostLogin implements UI {
-    private final ServerFacade serverFacade;
     private final String serverUrl;
+    private final ServerFacade serverFacade;
     private Collection<GameData> serverGames;
     private DrawBoard drawingBoard;
     public PostLogin(String serverUrl) throws ResponseException {
