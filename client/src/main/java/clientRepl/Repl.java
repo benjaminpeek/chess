@@ -39,7 +39,18 @@ public class Repl implements NotificationHandler {
 
     @Override
     public void notify(ServerMessage notification) {
-        System.out.println(SET_TEXT_COLOR_RED + notification.getServerMessageType());
+        switch (notification.getServerMessageType()) {
+            case LOAD_GAME -> {
+                System.out.println();
+            }
+            case ERROR -> {
+                System.out.println("no");
+            }
+            case NOTIFICATION -> {
+
+            }
+        }
+        //System.out.println(SET_TEXT_COLOR_RED + notification.getServerMessageType());
         printPrompt();
     }
 
