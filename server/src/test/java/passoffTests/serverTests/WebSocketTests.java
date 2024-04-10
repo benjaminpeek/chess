@@ -369,7 +369,7 @@ public class WebSocketTests {
 
     @Test
     @Order(15)
-    @DisplayName("Normal Resign")
+    @DisplayName("Normal ResignGame")
     public void validResign() {
         setupNormalGame();
 
@@ -386,7 +386,7 @@ public class WebSocketTests {
 
     @Test
     @Order(16)
-    @DisplayName("Move After Resign")
+    @DisplayName("Move After ResignGame")
     public void moveAfterResign() {
         setupNormalGame();
 
@@ -411,7 +411,7 @@ public class WebSocketTests {
 
     @Test
     @Order(17)
-    @DisplayName("Observer Resign")
+    @DisplayName("Observer ResignGame")
     public void invalidResignObserver() {
         setupNormalGame();
 
@@ -429,7 +429,7 @@ public class WebSocketTests {
 
     @Test
     @Order(18)
-    @DisplayName("Double Resign")
+    @DisplayName("Double ResignGame")
     public void invalidResignGameOver() {
         setupNormalGame();
 
@@ -450,7 +450,7 @@ public class WebSocketTests {
 
     @Test
     @Order(19)
-    @DisplayName("Leave Game")
+    @DisplayName("LeaveGame Game")
     public void leaveGame() {
         setupNormalGame();
 
