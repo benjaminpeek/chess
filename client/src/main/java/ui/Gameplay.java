@@ -1,18 +1,14 @@
 package ui;
 
-import clientRepl.Repl;
 import exceptions.ResponseException;
-import serverFacade.ServerFacade;
-import webSocket.NotificationHandler;
+import webSocket.MessageHandler;
 import webSocket.WebSocketFacade;
 import webSocketMessages.serverMessages.ServerMessage;
-
-import java.util.Arrays;
 
 import static visual.EscapeSequences.RESET_TEXT_COLOR;
 import static visual.EscapeSequences.SET_TEXT_COLOR_GREEN;
 
-public class Gameplay implements UI, NotificationHandler {
+public class Gameplay implements UI, MessageHandler {
     private final String serverUrl;
     private final WebSocketFacade webSocketFacade;
 

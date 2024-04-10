@@ -10,23 +10,23 @@ import java.net.URISyntaxException;
 
 public class WebSocketFacade extends Endpoint {
     Session session;
-    NotificationHandler notificationHandler;
+    MessageHandler messageHandler;
 
-    public WebSocketFacade(String url, NotificationHandler notificationHandler) throws ResponseException {
+    public WebSocketFacade(String url, MessageHandler messageHandler) throws ResponseException {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/connect");
-            this.notificationHandler = notificationHandler;
+            this.messageHandler = messageHandler;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
 
             //set message handler
-            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+            this.session.addMessageHandler(new javax.websocket.MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    notificationHandler.notify(notification, message);
+                    messageHandler.notify(notification, message);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {

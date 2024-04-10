@@ -2,8 +2,6 @@ package clientRepl;
 
 import ui.PreLogin;
 import ui.UI;
-import webSocket.NotificationHandler;
-import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.Scanner;
 
