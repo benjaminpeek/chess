@@ -22,10 +22,6 @@ public class WebSocketSessions {
         game.remove(authToken, session);
     }
 
-    public void removeSession(Session session) {
-
-    }
-
     public Map<String, Session> getSessionsForGame(int gameID) {
         return sessionsMap.get(gameID);
     }
