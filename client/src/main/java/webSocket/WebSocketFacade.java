@@ -26,7 +26,7 @@ public class WebSocketFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    notificationHandler.notify(notification);
+                    notificationHandler.notify(notification, message);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {

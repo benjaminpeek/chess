@@ -9,14 +9,12 @@ import java.util.Scanner;
 
 import static visual.EscapeSequences.*;
 
-public class Repl implements NotificationHandler {
+public class Repl {
     public static UI currentUI;
     public static String username;
-    public static NotificationHandler notificationHandler;
 
     public Repl(String serverUrl) {
         currentUI = new PreLogin(serverUrl);
-        notificationHandler = this;
     }
 
     public void run() {
@@ -38,23 +36,6 @@ public class Repl implements NotificationHandler {
             }
         }
         System.out.println();
-    }
-
-    @Override
-    public void notify(ServerMessage notification) {
-        switch (notification.getServerMessageType()) {
-            case LOAD_GAME -> {
-                System.out.println();
-            }
-            case ERROR -> {
-                System.out.println("no");
-            }
-            case NOTIFICATION -> {
-
-            }
-        }
-        //System.out.println(SET_TEXT_COLOR_RED + notification.getServerMessageType());
-        printPrompt();
     }
 
     private void printPrompt() {

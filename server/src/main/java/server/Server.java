@@ -18,6 +18,7 @@ import service.ClearService;
 import service.GameService;
 import service.UserService;
 import spark.*;
+import webSocket.WebSocketHandler;
 
 import java.util.Map;
 
@@ -43,6 +44,9 @@ public class Server {
         ClearHandler clearHandler = new ClearHandler(clearService);
         UserHandler userHandler = new UserHandler(userService);
         GameHandler gameHandler = new GameHandler(gameService);
+
+        // use websocket now
+        Spark.webSocket("/connect", WebSocketHandler.class);
 
         // Register endpoints and handle exceptions here.
         // endpoints
