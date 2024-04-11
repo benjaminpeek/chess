@@ -11,4 +11,14 @@ public class MakeMove extends UserGameCommand {
         this.gameID = gameID;
         this.move = move;
     }
+
+
+    public int gameID() {
+        return this.gameID;
+    }
+
+    public ChessMove move() {
+        return this.move;
+    }
+
 }

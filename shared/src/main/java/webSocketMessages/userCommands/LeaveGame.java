@@ -7,4 +7,10 @@ public class LeaveGame extends UserGameCommand {
         super(authToken, CommandType.LEAVE);
         this.gameID = gameID;
     }
+
+
+    public int gameID() {
+        return this.gameID;
+    }
+
 }
