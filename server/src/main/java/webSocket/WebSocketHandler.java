@@ -4,14 +4,10 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
-import webSocketMessages.serverMessages.Notification;
-import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
 
 import java.io.IOException;
-import java.util.Map;
 
 @WebSocket
 public class WebSocketHandler {
@@ -23,7 +19,7 @@ public class WebSocketHandler {
 
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, String message) throws IOException {
         UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
         switch (userGameCommand.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, message);
@@ -34,9 +30,12 @@ public class WebSocketHandler {
         }
     }
 
-    public void joinPlayer(Session session, String message) {
+    public void joinPlayer(Session session, String message) throws IOException {
         JoinPlayer joinPlayerCommand = new Gson().fromJson(message, JoinPlayer.class);
-
+        webSocketSessions.addSessionToGame(joinPlayerCommand.gameID(), joinPlayerCommand.getAuthString(), session);
+        webSocketSessions.sendMessage(joinPlayerCommand.gameID(), new Gson().fromJson(message, LoadGame.class),
+                joinPlayerCommand.getAuthString());
+        //
     }
 
     public void joinObserver(Session session, String message) {
@@ -54,25 +53,5 @@ public class WebSocketHandler {
     public void resignGame(String message) {
         ResignGame resignGameCommand = new Gson().fromJson(message, ResignGame.class);
     }
-
-//    public void sendMessage(int gameID, ServerMessage message, String authToken) {
-//
-//    }
-//
-//    public void broadcastMessage(int gameID, ServerMessage message, String exceptThisAuth) throws IOException {
-////        switch (message.getServerMessageType()) {
-////            case NOTIFICATION -> message = new Gson().fromJson(message.toString(), Notification.class);
-////            case LOAD_GAME -> message = new Gson().fromJson(message.toString(), LoadGame.class);
-////            case ERROR -> message = new Gson().fromJson(message.toString(), Error.class);
-////        }
-//
-//        Map<String, Session> relevantSessions = webSocketSessions.getSessionsForGame(gameID);
-//        for (String authToken : relevantSessions.keySet()) {
-//            if (!authToken.equals(exceptThisAuth)) {
-//                relevantSessions.get(authToken).getRemote().sendString(message.toString());
-//            }
-//        }
-//
-//    }
 
 }

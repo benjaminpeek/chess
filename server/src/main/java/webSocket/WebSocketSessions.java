@@ -29,23 +29,16 @@ public class WebSocketSessions {
         return sessionsMap.get(gameID);
     }
 
-    public void sendMessage(int gameID, ServerMessage message, String authToken) {
-
+    public void sendMessage(int gameID, ServerMessage message, String authToken) throws IOException {
+        sessionsMap.get(gameID).get(authToken).getRemote().sendString(message.toString());
     }
 
     public void broadcastMessage(int gameID, ServerMessage message, String exceptThisAuth) throws IOException {
-//        switch (message.getServerMessageType()) {
-//            case NOTIFICATION -> message = new Gson().fromJson(message.toString(), Notification.class);
-//            case LOAD_GAME -> message = new Gson().fromJson(message.toString(), LoadGame.class);
-//            case ERROR -> message = new Gson().fromJson(message.toString(), Error.class);
-//        }
-
         Map<String, Session> relevantSessions = getSessionsForGame(gameID);
         for (String authToken : relevantSessions.keySet()) {
             if (!authToken.equals(exceptThisAuth)) {
                 relevantSessions.get(authToken).getRemote().sendString(message.toString());
             }
         }
-
     }
 }
