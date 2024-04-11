@@ -39,15 +39,21 @@ public class WebSocketSessions {
 
     public void sendMessage(int gameID, ServerMessage message, String authToken) throws IOException {
         String messageJSON = new Gson().toJson(message);
-        sessionsMap.get(gameID).get(authToken).getRemote().sendString(messageJSON);
+        Session session = sessionsMap.get(gameID).get(authToken);
+        if(session.isOpen()) {
+            session.getRemote().sendString(messageJSON);
+        }
     }
 
     public void broadcastMessage(int gameID, ServerMessage message, String exceptThisAuth) throws IOException {
         String messageJSON = new Gson().toJson(message);
         Map<String, Session> relevantSessions = getSessionsForGame(gameID);
         for (String authToken : relevantSessions.keySet()) {
-            if (!authToken.equals(exceptThisAuth)) {
-                relevantSessions.get(authToken).getRemote().sendString(messageJSON);
+            Session session = sessionsMap.get(gameID).get(authToken);
+            if (session.isOpen()) {
+                if (!authToken.equals(exceptThisAuth)) {
+                    session.getRemote().sendString(messageJSON);
+                }
             }
         }
     }

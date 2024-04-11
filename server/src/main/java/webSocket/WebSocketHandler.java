@@ -1,6 +1,7 @@
 package webSocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
@@ -38,7 +39,7 @@ public class WebSocketHandler {
         switch (userGameCommand.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, message);
             case JOIN_OBSERVER -> joinObserver(session, message);
-            case MAKE_MOVE -> makeMove(message);
+            case MAKE_MOVE -> makeMove(session, message);
             case LEAVE -> leaveGame(message);
             case RESIGN -> resignGame(message);
         }
@@ -48,19 +49,18 @@ public class WebSocketHandler {
         JoinPlayer joinPlayerCommand = new Gson().fromJson(message, JoinPlayer.class);
         int gameID = joinPlayerCommand.gameID();
         String authToken = joinPlayerCommand.getAuthString();
-        if (authDataAccess.getAuth(authToken) == null) {
-            sendErrorMessage(session, "invalid auth token");
-            return;
-        }
-        if (gameDataAccess.getGame(gameID) == null) {
+        if (badGameID(gameID)) {
             sendErrorMessage(session, "invalid game ID");
             return;
         }
+        if (badAuth(authToken)) {
+            sendErrorMessage(session, "invalid auth token");
+            return;
+        }
         // valid game and auth, now pull more data to use
-        GameData gameData = gameDataAccess.getGame(gameID);
         String username = authDataAccess.getAuth(authToken).username();
-        String whiteUsername = gameData.whiteUsername();
-        String blackUsername = gameData.blackUsername();
+        String whiteUsername = gameDataAccess.getGame(gameID).whiteUsername();
+        String blackUsername = gameDataAccess.getGame(gameID).blackUsername();
         ChessGame.TeamColor playerColor = joinPlayerCommand.playerColor();
 
         // verify that this game has, beforehand, been joined by this player
@@ -77,34 +77,50 @@ public class WebSocketHandler {
         }
 
         webSocketSessions.addSessionToGame(gameID, authToken, session);
-        webSocketSessions.sendMessage(gameID, new LoadGame(gameData), authToken);
-        webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
-                + " joined as " + joinPlayerCommand.playerColor()), authToken);
+        webSocketSessions.sendMessage(gameID, new LoadGame(gameDataAccess.getGame(gameID)), authToken);
+        webSocketSessions.broadcastMessage(gameID, new Notification(username + " joined as "
+                + playerColor), authToken);
     }
 
     public void joinObserver(Session session, String message) throws DataAccessException, IOException {
         JoinObserver joinObserverCommand = new Gson().fromJson(message, JoinObserver.class);
         int gameID = joinObserverCommand.gameID();
         String authToken = joinObserverCommand.getAuthString();
-        if (authDataAccess.getAuth(authToken) == null) {
-            String errorMsg = new Gson().toJson(new Error("invalid auth token"));
-            session.getRemote().sendString(errorMsg);
+        if (badGameID(gameID)) {
+            sendErrorMessage(session, "invalid game ID");
+            return;
         }
-        if (gameDataAccess.getGame(gameID) == null) {
-            String errorMsg = new Gson().toJson(new Error("invalid game ID"));
-            session.getRemote().sendString(errorMsg);
+        if (badAuth(authToken)) {
+            sendErrorMessage(session, "invalid auth token");
+            return;
         }
-        GameData gameData = gameDataAccess.getGame(gameID);
 
         webSocketSessions.addSessionToGame(joinObserverCommand.gameID(), joinObserverCommand.getAuthString(), session);
-        webSocketSessions.sendMessage(gameID, new LoadGame(gameData), authToken);
+        webSocketSessions.sendMessage(gameID, new LoadGame(gameDataAccess.getGame(gameID)), authToken);
         webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
                 + " joined as an observer"), authToken);
 
     }
 
-    public void makeMove(String message) {
+    public void makeMove(Session session, String message) throws IOException, DataAccessException {
         MakeMove makeMoveCommand = new Gson().fromJson(message, MakeMove.class);
+        int gameID = makeMoveCommand.gameID();
+        String authToken = makeMoveCommand.getAuthString();
+        if (badGameID(gameID)) {
+            sendErrorMessage(session, "invalid game ID");
+            return;
+        }
+        if (badAuth(authToken)) {
+            sendErrorMessage(session, "invalid auth token");
+            return;
+        }
+
+        ChessMove move = makeMoveCommand.move();
+        // get the users so I can get their auths for the updateGame method
+        // somehow get the users auth data so I can put it in the updateGame method
+        GameData gameData = gameDataAccess.getGame(gameID);
+
+
         // ChessGame/Move logic here
         // convert letters to numbers
     }
@@ -129,13 +145,21 @@ public class WebSocketHandler {
         session.getRemote().sendString(errorMsg);
     }
 
+    private boolean badAuth(String authToken) throws DataAccessException {
+        return authDataAccess.getAuth(authToken) == null;
+    }
+
+    private boolean badGameID(int gameID) throws DataAccessException, IOException {
+        return gameDataAccess.getGame(gameID) == null;
+    }
+
 
     // send message/error to root client if gameID/auth is invalid???
     // how would I handle sending the messages to the root client without gameID/session
     // how to get tests to work
     // throw exceptions or send error message?
     // how to broadcast to all users including root client -- does my solution look/work?
-    // how to handle observers? where to store them / do I need to?
+    // how to handle observers? where to store them / do i need to?
     // do i use the other service classes in this one to actually add players to the game as necessary? or just the daos
     // does all the game login happen in this class? making moves, checking for check/mate, winning/losing?
     // how to handle make move commands, where does the logic go that allows for chess notation to be used to make moves?
