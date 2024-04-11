@@ -17,7 +17,6 @@ public class WebSocketSessions {
 
     public void addSessionToGame(int gameID, String authToken, Session session) {
         sessionsMap.get(gameID).put(authToken, session);
-        // broadcast message? look at petshop to know what to do here ConnectionManager
     }
 
     public void removeSessionFromGame(int gameID, String authToken, Session session) {
@@ -39,6 +38,13 @@ public class WebSocketSessions {
             if (!authToken.equals(exceptThisAuth)) {
                 relevantSessions.get(authToken).getRemote().sendString(message.toString());
             }
+        }
+    }
+
+    public void broadcastMessageAll(int gameID, ServerMessage message) throws IOException {
+        Map<String, Session> relevantSessions = getSessionsForGame(gameID);
+        for (String authToken : relevantSessions.keySet()) {
+            relevantSessions.get(authToken).getRemote().sendString(message.toString());
         }
     }
 }
