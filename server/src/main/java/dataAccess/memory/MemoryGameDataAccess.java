@@ -1,6 +1,8 @@
 package dataAccess.memory;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
@@ -64,6 +66,16 @@ public class MemoryGameDataAccess implements GameDataAccess {
     public void clearGames() {
         gameDataMap.clear();
         this.newGameID = 0;
+    }
+
+    @Override
+    public void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException {
+        ChessGame chessGame = getGame(gameID).game();
+        if (move != null) {
+            chessGame.makeMove(move);
+        }
+        addPlayer("WHITE", gameID, whiteAuth);
+        addPlayer("BLACK", gameID, blackAuth);
     }
 
     private void incrementNewGameID() {

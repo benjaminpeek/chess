@@ -1,5 +1,7 @@
 package dataAccess.interfaces;
 
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import dataAccess.DataAccessException;
 import model.GameData;
 
@@ -12,4 +14,5 @@ public interface GameDataAccess {
     GameData getGame(int gameID) throws DataAccessException;
     void addPlayer(String clientColor, int gameID, String authToken) throws DataAccessException;
     void clearGames() throws DataAccessException;
+    void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException;
 }

@@ -1,5 +1,6 @@
 package webSocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import webSocketMessages.serverMessages.ServerMessage;
 
@@ -10,13 +11,21 @@ import java.util.Map;
 public class WebSocketSessions {
     Map<Integer, Map<String, Session>> sessionsMap;
 
-    WebSocketSessions() {
+    public WebSocketSessions() {
         this.sessionsMap = new HashMap<>();
     }
 
 
     public void addSessionToGame(int gameID, String authToken, Session session) {
-        sessionsMap.get(gameID).put(authToken, session);
+        Map<String, Session> game = sessionsMap.get(gameID);
+        if (game == null) {
+            Map<String, Session> newGame = new HashMap<>();
+            newGame.put(authToken, session);
+            sessionsMap.put(gameID, newGame);
+        } else {
+            game.put(authToken, session);
+            sessionsMap.put(gameID, game);
+        }
     }
 
     public void removeSessionFromGame(int gameID, String authToken, Session session) {
@@ -29,22 +38,25 @@ public class WebSocketSessions {
     }
 
     public void sendMessage(int gameID, ServerMessage message, String authToken) throws IOException {
-        sessionsMap.get(gameID).get(authToken).getRemote().sendString(message.toString());
+        String messageJSON = new Gson().toJson(message);
+        sessionsMap.get(gameID).get(authToken).getRemote().sendString(messageJSON);
     }
 
     public void broadcastMessage(int gameID, ServerMessage message, String exceptThisAuth) throws IOException {
+        String messageJSON = new Gson().toJson(message);
         Map<String, Session> relevantSessions = getSessionsForGame(gameID);
         for (String authToken : relevantSessions.keySet()) {
             if (!authToken.equals(exceptThisAuth)) {
-                relevantSessions.get(authToken).getRemote().sendString(message.toString());
+                relevantSessions.get(authToken).getRemote().sendString(messageJSON);
             }
         }
     }
 
     public void broadcastMessageAll(int gameID, ServerMessage message) throws IOException {
+        String messageJSON = new Gson().toJson(message);
         Map<String, Session> relevantSessions = getSessionsForGame(gameID);
         for (String authToken : relevantSessions.keySet()) {
-            relevantSessions.get(authToken).getRemote().sendString(message.toString());
+            relevantSessions.get(authToken).getRemote().sendString(messageJSON);
         }
     }
 }
