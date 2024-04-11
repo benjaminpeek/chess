@@ -2,12 +2,12 @@ package webSocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
 import dataAccess.interfaces.UserDataAccess;
-import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -34,7 +34,7 @@ public class WebSocketHandler {
 
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException, DataAccessException {
+    public void onMessage(Session session, String message) throws IOException, DataAccessException, InvalidMoveException {
         UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
         switch (userGameCommand.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, message);
@@ -102,7 +102,7 @@ public class WebSocketHandler {
 
     }
 
-    public void makeMove(Session session, String message) throws IOException, DataAccessException {
+    public void makeMove(Session session, String message) throws IOException, DataAccessException, InvalidMoveException {
         MakeMove makeMoveCommand = new Gson().fromJson(message, MakeMove.class);
         int gameID = makeMoveCommand.gameID();
         String authToken = makeMoveCommand.getAuthString();
@@ -115,14 +115,26 @@ public class WebSocketHandler {
             return;
         }
 
+        ChessGame chessGame = gameDataAccess.getGame(gameID).game();
         ChessMove move = makeMoveCommand.move();
-        // get the users so I can get their auths for the updateGame method
-        // somehow get the users auth data so I can put it in the updateGame method
-        GameData gameData = gameDataAccess.getGame(gameID);
+        // if move is invalid
+        if (!chessGame.validMoves(move.getStartPosition()).contains(move)) {
+            sendErrorMessage(session, "move is not valid");
+        }
+        // if making move out of turn
+        if (!chessGame.getBoard().getPiece(move.getStartPosition()).getTeamColor().equals(chessGame.getTeamTurn())) {
+            sendErrorMessage(session, "trying to make move out of turn");
+        }
+        // if making move as observer
 
 
+
+        gameDataAccess.updateGame(gameID, null, null, move);
+        webSocketSessions.broadcastMessageAll(gameID, new LoadGame(gameDataAccess.getGame(gameID)));
+        webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
+         + " made move " + move.toString()), authToken);
         // ChessGame/Move logic here
-        // convert letters to numbers
+        // convert letters to numbers? maybe here maybe not
     }
 
     public void leaveGame(String message) {
@@ -149,7 +161,7 @@ public class WebSocketHandler {
         return authDataAccess.getAuth(authToken) == null;
     }
 
-    private boolean badGameID(int gameID) throws DataAccessException, IOException {
+    private boolean badGameID(int gameID) throws DataAccessException {
         return gameDataAccess.getGame(gameID) == null;
     }
 

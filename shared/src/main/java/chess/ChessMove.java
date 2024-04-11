@@ -61,10 +61,11 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "ChessMove{" +
-                "startPosition=" + startPosition +
-                ", endPosition=" + endPosition +
-                ", promotionPiece=" + promotionPiece +
-                '}';
+        return getCharForNumber(startPosition.getColumn()) + startPosition.getRow() + " -> "
+                + getCharForNumber(endPosition.getColumn()) + endPosition.getRow();
+    }
+
+    private String getCharForNumber(int i) {
+        return i > 0 && i < 27 ? String.valueOf((char)(i + 96)) : null;
     }
 }

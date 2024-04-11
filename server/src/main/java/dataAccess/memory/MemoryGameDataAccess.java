@@ -74,8 +74,12 @@ public class MemoryGameDataAccess implements GameDataAccess {
         if (move != null) {
             chessGame.makeMove(move);
         }
-        addPlayer("WHITE", gameID, whiteAuth);
-        addPlayer("BLACK", gameID, blackAuth);
+        if (whiteAuth != null) {
+            addPlayer("WHITE", gameID, whiteAuth);
+        }
+        if (blackAuth != null) {
+            addPlayer("BLACK", gameID, blackAuth);
+        }
     }
 
     private void incrementNewGameID() {

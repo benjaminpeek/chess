@@ -62,7 +62,10 @@ public class WebSocketSessions {
         String messageJSON = new Gson().toJson(message);
         Map<String, Session> relevantSessions = getSessionsForGame(gameID);
         for (String authToken : relevantSessions.keySet()) {
-            relevantSessions.get(authToken).getRemote().sendString(messageJSON);
+            Session session = sessionsMap.get(gameID).get(authToken);
+            if (session.isOpen()) {
+                session.getRemote().sendString(messageJSON);
+            }
         }
     }
 }

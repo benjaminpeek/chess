@@ -166,7 +166,5 @@ public class SqlGameDataAccess implements GameDataAccess {
         if (move != null) {
             chessGame.makeMove(move);
         }
-        addPlayer("WHITE", gameID, whiteAuth);
-        addPlayer("BLACK", gameID, blackAuth);
     }
 }
