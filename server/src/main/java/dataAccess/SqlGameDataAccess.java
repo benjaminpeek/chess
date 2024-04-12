@@ -1,6 +1,8 @@
 package dataAccess;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
@@ -173,6 +175,24 @@ public class SqlGameDataAccess implements GameDataAccess {
         try (var conn = DatabaseManager.getConnection()) {
             try (var  ps = conn.prepareStatement(statement)) {
                 ps.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateGame(int gameID, ChessMove move) throws DataAccessException, InvalidMoveException {
+        ChessGame chessGame = getGame(gameID).game();
+        chessGame.makeMove(move);
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement = "UPDATE games SET game=? WHERE id=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, new Gson().toJson(chessGame));
+                ps.setInt(2, gameID);
+                if (getGame(gameID) != null) {
+                    ps.executeUpdate();
+                }
             }
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException(e.getMessage());

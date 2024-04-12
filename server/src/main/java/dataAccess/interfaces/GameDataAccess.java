@@ -16,16 +16,10 @@ public interface GameDataAccess {
     void addPlayer(String clientColor, int gameID, String authToken) throws DataAccessException;
     void removePlayer(String clientColor, int gameID, String authToken) throws DataAccessException;
     void clearGames() throws DataAccessException;
-    default void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException {
+    default void updateGame(int gameID, ChessMove move) throws DataAccessException, InvalidMoveException {
         ChessGame chessGame = getGame(gameID).game();
         if (move != null) {
             chessGame.makeMove(move);
-        }
-        if (whiteAuth != null) {
-            addPlayer("WHITE", gameID, whiteAuth);
-        }
-        if (blackAuth != null) {
-            addPlayer("BLACK", gameID, blackAuth);
         }
     }
 }

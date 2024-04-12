@@ -2,7 +2,6 @@ package webSocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
-import chess.ChessPosition;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
@@ -122,19 +121,8 @@ public class WebSocketHandler {
         String whiteUsername = gameDataAccess.getGame(gameID).whiteUsername();
         String blackUsername = gameDataAccess.getGame(gameID).blackUsername();
 
-        if (move.getStartPosition().equals(new ChessPosition(2, 5)) && move.getEndPosition().equals(new ChessPosition(4, 5))) {
-            sendErrorMessage(session, "invalid auth token");
-            return;
-        }
-
-        boolean whiteMated = chessGame.isInCheck(ChessGame.TeamColor.WHITE);
-        boolean blackMated = chessGame.isInCheck(ChessGame.TeamColor.BLACK);
-        System.out.println(whiteMated);
-        System.out.println(blackMated);
-
-
         if (chessGame.isGameOver()) {
-            sendErrorMessage(session, "cannot make moves when a player is in checkmate");
+            sendErrorMessage(session, "cannot make moves when a game is over");
             return;
         }
 
@@ -167,36 +155,15 @@ public class WebSocketHandler {
                 }
             }
         }
-        boolean checkmate = chessGame.isInCheckmate(ChessGame.TeamColor.WHITE);
-        boolean checkmate2 = chessGame.isInCheckmate(ChessGame.TeamColor.BLACK);
-        boolean check = chessGame.isInCheck(ChessGame.TeamColor.WHITE);
-        boolean check2 = chessGame.isInCheck(ChessGame.TeamColor.BLACK);
-        if (chessGame.isInCheckmate(ChessGame.TeamColor.WHITE)) {
-            webSocketSessions.broadcastMessageAll(gameID, new Notification(whiteUsername + " is in checkmate."));
-            sendErrorMessage(session, "cannot make moves when a player is in checkmate");
-            return;
-        }
-        if (chessGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
-            webSocketSessions.broadcastMessageAll(gameID, new Notification(blackUsername + " is in checkmate."));
-            sendErrorMessage(session, "cannot make moves when a player is in checkmate");
-            return;
-        }
-        if (chessGame.isInStalemate(ChessGame.TeamColor.WHITE)) {
-            webSocketSessions.broadcastMessageAll(gameID, new Notification(whiteUsername + " is in stalemate."));
-            sendErrorMessage(session, "cannot make moves when a player is in stalemate");
-            return;
-        }
-        if (chessGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
-            webSocketSessions.broadcastMessageAll(gameID, new Notification(blackUsername + " is in stalemate."));
-            sendErrorMessage(session, "cannot make moves when a player is in stalemate");
-            return;
-        }
 
-        gameDataAccess.updateGame(gameID, null, null, move);
+        gameDataAccess.updateGame(gameID, move);
+        // send check notification!!!!
+//        if (chessGame.isInCheck()) {
+//
+//        }
         webSocketSessions.broadcastMessageAll(gameID, new LoadGame(gameDataAccess.getGame(gameID)));
         webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
          + " made move " + move), authToken);
-        // convert letters to numbers? maybe here maybe not?
     }
 
     public void leaveGame(Session session, String message) throws DataAccessException, IOException {
@@ -259,13 +226,9 @@ public class WebSocketHandler {
             gameDataAccess.removePlayer("BLACK", gameID, authToken);
         }
 
+        gameDataAccess.getGame(gameID).game().setGameOver();
         webSocketSessions.broadcastMessageAll(gameID, new Notification(authDataAccess.getAuth(authToken).username()
                 + " has resigned and the game is now over"));
-        // ChessGame/Move logic
-        // stop gameplay, still in the session, but now an "observer"
-        // remove username from database, but keep them in the session
-        //  update in game dao that takes a new GameData, with updated usernames, etc., overwriting the old game
-        // set all players to observers? then makeMove would always fail
     }
 
     private void sendErrorMessage(Session session, String message) throws IOException {

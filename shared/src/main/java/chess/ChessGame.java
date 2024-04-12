@@ -21,7 +21,7 @@ public class ChessGame {
     public ChessGame() {
         teamTurn = TeamColor.WHITE;
         board = new ChessBoard();
-        gameOver = false;
+//        gameOver = false;
     }
 
     /**
@@ -89,6 +89,16 @@ public class ChessGame {
         if (validMoves.isEmpty()) {
             throw new InvalidMoveException();
         }
+
+        if (isInStalemate(TeamColor.WHITE) && isInStalemate(TeamColor.BLACK)) {
+            this.gameOver = true;
+            return;
+        }
+        if (isInCheckmate(this.board.getPiece(move.getStartPosition()).getTeamColor())) {
+            this.gameOver = true;
+            return;
+        }
+
         if (validMoves.contains(move)) {
             ChessPiece piece = this.getBoard().getPiece(move.getStartPosition());
             // move piece to the new position, promote if necessary
@@ -107,9 +117,6 @@ public class ChessGame {
             }
         } else {
             throw new InvalidMoveException();
-        }
-        if (isInCheckmate(teamTurn)) {
-            this.gameOver = true;
         }
     }
 
@@ -149,12 +156,14 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         // first find the position of the current team's king
         ChessPosition kingPosition = null;
+        findKing:
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPiece checkPiece = board.getPiece(new ChessPosition(i, j));
                 if (checkPiece != null && checkPiece.getTeamColor() == teamColor
                         && checkPiece.getPieceType() == ChessPiece.PieceType.KING) {
                     kingPosition = new ChessPosition(i, j);
+                    break findKing;
                 }
             }
         }
@@ -182,7 +191,11 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return isInCheck(teamColor) && isInStalemate(teamColor);
+        if (isInCheck(teamColor) && isInStalemate(teamColor)) {
+            this.gameOver = true;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -240,5 +253,9 @@ public class ChessGame {
 
     public boolean isGameOver() {
         return this.gameOver;
+    }
+
+    public void setGameOver() {
+        this.gameOver = true;
     }
 }
