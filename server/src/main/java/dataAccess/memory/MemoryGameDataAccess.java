@@ -79,20 +79,6 @@ public class MemoryGameDataAccess implements GameDataAccess {
         this.newGameID = 0;
     }
 
-//    @Override
-//    public void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException {
-//        ChessGame chessGame = getGame(gameID).game();
-//        if (move != null) {
-//            chessGame.makeMove(move);
-//        }
-//        if (whiteAuth != null) {
-//            addPlayer("WHITE", gameID, whiteAuth);
-//        }
-//        if (blackAuth != null) {
-//            addPlayer("BLACK", gameID, blackAuth);
-//        }
-//    }
-
     private void incrementNewGameID() {
         this.newGameID++;
     }
