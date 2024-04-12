@@ -244,10 +244,4 @@ public class WebSocketHandler {
     private boolean badGameID(int gameID) throws DataAccessException {
         return gameDataAccess.getGame(gameID) == null;
     }
-
-
-    // check if game has been resigned? where do i do that
-    // moving after checkmate not working
-    // what would the updated game look like of a resigned game? what about a checkmated game?
-    // how to keep track of when the game is over? in ChessGame? GameData? WebSocketHandler?
 }
