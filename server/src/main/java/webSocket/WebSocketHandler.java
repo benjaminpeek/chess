@@ -121,11 +121,6 @@ public class WebSocketHandler {
         String whiteUsername = gameDataAccess.getGame(gameID).whiteUsername();
         String blackUsername = gameDataAccess.getGame(gameID).blackUsername();
 
-        if (chessGame.isGameOver()) {
-            sendErrorMessage(session, "cannot make moves when a game is over");
-            return;
-        }
-
         if (whiteUsername == null || blackUsername == null) {
             sendErrorMessage(session, "observers cannot make moves");
             return;
@@ -155,12 +150,18 @@ public class WebSocketHandler {
                 }
             }
         }
+        if (chessGame.isInCheck(ChessGame.TeamColor.WHITE)) {
+            webSocketSessions.broadcastMessage(gameID, new Notification(whiteUsername + " is in check! "), authToken);
+        }
+        if (chessGame.isInCheck(ChessGame.TeamColor.BLACK)) {
+            webSocketSessions.broadcastMessage(gameID, new Notification(blackUsername + " is in check! "), authToken);
+        }
+        if (chessGame.isGameOver()) {
+            sendErrorMessage(session, "cannot make moves when a game is over");
+            return;
+        }
 
         gameDataAccess.updateGame(gameID, move);
-        // send check notification!!!!
-//        if (chessGame.isInCheck()) {
-//
-//        }
         webSocketSessions.broadcastMessageAll(gameID, new LoadGame(gameDataAccess.getGame(gameID)));
         webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
          + " made move " + move), authToken);
