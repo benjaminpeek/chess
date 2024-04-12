@@ -149,6 +149,27 @@ public class SqlGameDataAccess implements GameDataAccess {
     }
 
     @Override
+    public void removePlayer(String clientColor, int gameID, String authToken) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement = null;
+            if (clientColor.equals("WHITE")) {
+                statement = "UPDATE games SET whiteUsername=NULL WHERE id=?";
+            } else if (clientColor.equals("BLACK")) {
+                statement = "UPDATE games SET blackUsername=NULL WHERE id=?";
+            }
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+
+                if (getGame(gameID) != null) {
+                    ps.executeUpdate();
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
     public void clearGames() throws DataAccessException {
         var statement = "TRUNCATE table games;";
         try (var conn = DatabaseManager.getConnection()) {
@@ -165,6 +186,12 @@ public class SqlGameDataAccess implements GameDataAccess {
         ChessGame chessGame = getGame(gameID).game();
         if (move != null) {
             chessGame.makeMove(move);
+        }
+        if (whiteAuth != null) {
+            addPlayer("WHITE", gameID, whiteAuth);
+        }
+        if (blackAuth != null) {
+            addPlayer("BLACK", gameID, blackAuth);
         }
     }
 }

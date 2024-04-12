@@ -13,6 +13,7 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board;
+    boolean gameOver;
 
     // helper variable to undo simulated moves
     private ChessPiece takenPiece;
@@ -20,6 +21,7 @@ public class ChessGame {
     public ChessGame() {
         teamTurn = TeamColor.WHITE;
         board = new ChessBoard();
+        gameOver = false;
     }
 
     /**
@@ -105,6 +107,9 @@ public class ChessGame {
             }
         } else {
             throw new InvalidMoveException();
+        }
+        if (isInCheckmate(teamTurn)) {
+            this.gameOver = true;
         }
     }
 
@@ -231,5 +236,9 @@ public class ChessGame {
             }
         }
         return moves;
+    }
+
+    public boolean isGameOver() {
+        return this.gameOver;
     }
 }

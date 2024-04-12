@@ -4,11 +4,13 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.InvalidMoveException;
 import dataAccess.DataAccessException;
+import dataAccess.DatabaseManager;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
 import model.AuthData;
 import model.GameData;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,6 +61,19 @@ public class MemoryGameDataAccess implements GameDataAccess {
         } else if (clientColor.equals("BLACK")) {
             this.gameDataMap.put(gameID, new GameData(gameID, game.whiteUsername(), user.username(), game.gameName(),
                     game.game()));
+        }
+    }
+
+    @Override
+    public void removePlayer(String clientColor, int gameID, String authToken) {
+        GameData gameData = gameDataMap.get(gameID);
+        if (clientColor.equals("WHITE")) {
+            gameDataMap.put(gameID, new GameData(gameID, null, gameData.blackUsername(),
+                    gameData.gameName(), gameData.game()));
+        }
+        else if (clientColor.equals("BLACK")) {
+            gameDataMap.put(gameID, new GameData(gameID, gameData.whiteUsername(), null,
+                    gameData.gameName(), gameData.game()));
         }
     }
 

@@ -40,8 +40,8 @@ public class WebSocketHandler {
             case JOIN_PLAYER -> joinPlayer(session, message);
             case JOIN_OBSERVER -> joinObserver(session, message);
             case MAKE_MOVE -> makeMove(session, message);
-            case LEAVE -> leaveGame(message);
-            case RESIGN -> resignGame(message);
+            case LEAVE -> leaveGame(session, message);
+            case RESIGN -> resignGame(session, message);
         }
     }
 
@@ -117,39 +117,142 @@ public class WebSocketHandler {
 
         ChessGame chessGame = gameDataAccess.getGame(gameID).game();
         ChessMove move = makeMoveCommand.move();
+        String username = authDataAccess.getAuth(authToken).username();
+        String whiteUsername = gameDataAccess.getGame(gameID).whiteUsername();
+        String blackUsername = gameDataAccess.getGame(gameID).blackUsername();
+        if (chessGame.isGameOver()) {
+            sendErrorMessage(session, "cannot make moves when a player is in checkmate");
+            return;
+        }
+
+        if (whiteUsername == null || blackUsername == null) {
+            sendErrorMessage(session, "observers cannot make moves");
+            return;
+        }
+        // if user is an observer
+        if (!whiteUsername.equals(username) && !blackUsername.equals(username)) {
+            sendErrorMessage(session, "observers cannot make moves");
+            return;
+        }
         // if move is invalid
-        if (!chessGame.validMoves(move.getStartPosition()).contains(move)) {
+        else if (!chessGame.validMoves(move.getStartPosition()).contains(move)) {
             sendErrorMessage(session, "move is not valid");
+            return;
         }
-        // if making move out of turn
-        if (!chessGame.getBoard().getPiece(move.getStartPosition()).getTeamColor().equals(chessGame.getTeamTurn())) {
-            sendErrorMessage(session, "trying to make move out of turn");
+        // if making move out of turn (requesting color does not match TeamTurn color)
+        switch (chessGame.getTeamTurn()) {
+            case WHITE -> {
+                if (blackUsername.equals(username)) {
+                    sendErrorMessage(session, "trying to make move out of turn");
+                    return;
+                }
+            }
+            case BLACK -> {
+                if (whiteUsername.equals(username)) {
+                    sendErrorMessage(session, "trying to make move out of turn");
+                    return;
+                }
+            }
         }
-        // if making move as observer
-
-
+        boolean checkmate = chessGame.isInCheckmate(ChessGame.TeamColor.WHITE);
+        boolean checkmate2 = chessGame.isInCheckmate(ChessGame.TeamColor.BLACK);
+        boolean check = chessGame.isInCheck(ChessGame.TeamColor.WHITE);
+        boolean check2 = chessGame.isInCheck(ChessGame.TeamColor.BLACK);
+        if (chessGame.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(whiteUsername + " is in checkmate."));
+            sendErrorMessage(session, "cannot make moves when a player is in checkmate");
+            return;
+        }
+        if (chessGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(blackUsername + " is in checkmate."));
+            sendErrorMessage(session, "cannot make moves when a player is in checkmate");
+            return;
+        }
+        if (chessGame.isInStalemate(ChessGame.TeamColor.WHITE)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(whiteUsername + " is in stalemate."));
+            sendErrorMessage(session, "cannot make moves when a player is in stalemate");
+            return;
+        }
+        if (chessGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(blackUsername + " is in stalemate."));
+            sendErrorMessage(session, "cannot make moves when a player is in stalemate");
+            return;
+        }
 
         gameDataAccess.updateGame(gameID, null, null, move);
         webSocketSessions.broadcastMessageAll(gameID, new LoadGame(gameDataAccess.getGame(gameID)));
         webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
-         + " made move " + move.toString()), authToken);
-        // ChessGame/Move logic here
-        // convert letters to numbers? maybe here maybe not
+         + " made move " + move), authToken);
+        // convert letters to numbers? maybe here maybe not?
     }
 
-    public void leaveGame(String message) {
+    public void leaveGame(Session session, String message) throws DataAccessException, IOException {
         LeaveGame leaveGameCommand = new Gson().fromJson(message, LeaveGame.class);
-        // remove the session from game
-        // remove username from database?
+        int gameID = leaveGameCommand.gameID();
+        String authToken = leaveGameCommand.getAuthString();
+        if (badGameID(gameID)) {
+            sendErrorMessage(session, "invalid game ID");
+            return;
+        }
+        if (badAuth(authToken)) {
+            sendErrorMessage(session, "invalid auth token");
+            return;
+        }
+
+        if (gameDataAccess.getGame(gameID).whiteUsername() != null) {
+            if (gameDataAccess.getGame(gameID).whiteUsername().equals(authDataAccess.getAuth(authToken).username())) {
+                gameDataAccess.removePlayer("WHITE", gameID, authToken);
+            }
+        }
+        if (gameDataAccess.getGame(gameID).blackUsername() != null) {
+            if (gameDataAccess.getGame(gameID).blackUsername().equals(authDataAccess.getAuth(authToken).username())) {
+                gameDataAccess.removePlayer("BLACK", gameID, authToken);
+            }
+        }
+
+        webSocketSessions.removeSessionFromGame(gameID, authToken, session);
+        webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
+                + " left the game "), authToken);
     }
 
-    public void resignGame(String message) {
+    public void resignGame(Session session, String message) throws DataAccessException, IOException {
         ResignGame resignGameCommand = new Gson().fromJson(message, ResignGame.class);
+        int gameID = resignGameCommand.gameID();
+        String authToken = resignGameCommand.getAuthString();
+        if (badGameID(gameID)) {
+            sendErrorMessage(session, "invalid game ID");
+            return;
+        }
+        if (badAuth(authToken)) {
+            sendErrorMessage(session, "invalid auth token");
+            return;
+        }
+        if (gameDataAccess.getGame(gameID).whiteUsername() == null
+                || gameDataAccess.getGame(gameID).blackUsername() == null) {
+            sendErrorMessage(session, "cannot resign against null opponent");
+            return;
+        }
+        if (!gameDataAccess.getGame(gameID).whiteUsername().equals(authDataAccess.getAuth(authToken).username())
+                && !gameDataAccess.getGame(gameID).blackUsername().equals(authDataAccess.getAuth(authToken).username())) {
+            sendErrorMessage(session, "observers cannot resign");
+            return;
+        }
+
+        // remove white and black player if they exist
+        if (gameDataAccess.getGame(gameID).whiteUsername() != null) {
+            gameDataAccess.removePlayer("WHITE", gameID, authToken);
+        }
+        if (gameDataAccess.getGame(gameID).blackUsername() != null) {
+            gameDataAccess.removePlayer("BLACK", gameID, authToken);
+        }
+
+        webSocketSessions.broadcastMessageAll(gameID, new Notification(authDataAccess.getAuth(authToken).username()
+                + " has resigned and the game is now over"));
         // ChessGame/Move logic
         // stop gameplay, still in the session, but now an "observer"
         // remove username from database, but keep them in the session
         //  update in game dao that takes a new GameData, with updated usernames, etc., overwriting the old game
-
+        // set all players to observers? then makeMove would always fail
     }
 
     private void sendErrorMessage(Session session, String message) throws IOException {
@@ -166,14 +269,8 @@ public class WebSocketHandler {
     }
 
 
-    // send message/error to root client if gameID/auth is invalid???
-    // how would I handle sending the messages to the root client without gameID/session
-    // how to get tests to work
-    // throw exceptions or send error message?
-    // how to broadcast to all users including root client -- does my solution look/work?
-    // how to handle observers? where to store them / do i need to?
-    // do i use the other service classes in this one to actually add players to the game as necessary? or just the daos
-    // does all the game login happen in this class? making moves, checking for check/mate, winning/losing?
-    // how to handle make move commands, where does the logic go that allows for chess notation to be used to make moves?
-    //  probably in ChessMove, as that is what gets passed in to the MAKE_MOVE user command?
+    // check if game has been resigned? where do i do that
+    // moving after checkmate not working
+    // what would the updated game look like of a resigned game? what about a checkmated game?
+    // how to keep track of when the game is over? in ChessGame? GameData? WebSocketHandler?
 }

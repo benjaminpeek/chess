@@ -30,7 +30,10 @@ public class WebSocketSessions {
 
     public void removeSessionFromGame(int gameID, String authToken, Session session) {
         Map<String, Session> game = sessionsMap.get(gameID);
-        game.remove(authToken, session);
+        if (session.isOpen()) {
+            game.remove(authToken, session);
+        }
+        session.close();
     }
 
     public Map<String, Session> getSessionsForGame(int gameID) {
