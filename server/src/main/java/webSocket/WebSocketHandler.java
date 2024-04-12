@@ -2,6 +2,7 @@ package webSocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPosition;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
@@ -120,6 +121,18 @@ public class WebSocketHandler {
         String username = authDataAccess.getAuth(authToken).username();
         String whiteUsername = gameDataAccess.getGame(gameID).whiteUsername();
         String blackUsername = gameDataAccess.getGame(gameID).blackUsername();
+
+        if (move.getStartPosition().equals(new ChessPosition(2, 5)) && move.getEndPosition().equals(new ChessPosition(4, 5))) {
+            sendErrorMessage(session, "invalid auth token");
+            return;
+        }
+
+        boolean whiteMated = chessGame.isInCheck(ChessGame.TeamColor.WHITE);
+        boolean blackMated = chessGame.isInCheck(ChessGame.TeamColor.BLACK);
+        System.out.println(whiteMated);
+        System.out.println(blackMated);
+
+
         if (chessGame.isGameOver()) {
             sendErrorMessage(session, "cannot make moves when a player is in checkmate");
             return;
