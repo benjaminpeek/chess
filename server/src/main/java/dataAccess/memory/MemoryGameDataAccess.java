@@ -1,16 +1,12 @@
 package dataAccess.memory;
 
 import chess.ChessGame;
-import chess.ChessMove;
-import chess.InvalidMoveException;
 import dataAccess.DataAccessException;
-import dataAccess.DatabaseManager;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
 import model.AuthData;
 import model.GameData;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -83,19 +79,19 @@ public class MemoryGameDataAccess implements GameDataAccess {
         this.newGameID = 0;
     }
 
-    @Override
-    public void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException {
-        ChessGame chessGame = getGame(gameID).game();
-        if (move != null) {
-            chessGame.makeMove(move);
-        }
-        if (whiteAuth != null) {
-            addPlayer("WHITE", gameID, whiteAuth);
-        }
-        if (blackAuth != null) {
-            addPlayer("BLACK", gameID, blackAuth);
-        }
-    }
+//    @Override
+//    public void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException {
+//        ChessGame chessGame = getGame(gameID).game();
+//        if (move != null) {
+//            chessGame.makeMove(move);
+//        }
+//        if (whiteAuth != null) {
+//            addPlayer("WHITE", gameID, whiteAuth);
+//        }
+//        if (blackAuth != null) {
+//            addPlayer("BLACK", gameID, blackAuth);
+//        }
+//    }
 
     private void incrementNewGameID() {
         this.newGameID++;

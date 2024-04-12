@@ -1,8 +1,6 @@
 package dataAccess;
 
 import chess.ChessGame;
-import chess.ChessMove;
-import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.interfaces.AuthDataAccess;
 import dataAccess.interfaces.GameDataAccess;
@@ -181,17 +179,17 @@ public class SqlGameDataAccess implements GameDataAccess {
         }
     }
 
-    @Override
-    public void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException {
-        ChessGame chessGame = getGame(gameID).game();
-        if (move != null) {
-            chessGame.makeMove(move);
-        }
-        if (whiteAuth != null) {
-            addPlayer("WHITE", gameID, whiteAuth);
-        }
-        if (blackAuth != null) {
-            addPlayer("BLACK", gameID, blackAuth);
-        }
-    }
+//    @Override
+//    public void updateGame(int gameID, String whiteAuth, String blackAuth, ChessMove move) throws DataAccessException, InvalidMoveException {
+//        ChessGame chessGame = getGame(gameID).game();
+//        if (move != null) {
+//            chessGame.makeMove(move);
+//        }
+//        if (whiteAuth != null) {
+//            addPlayer("WHITE", gameID, whiteAuth);
+//        }
+//        if (blackAuth != null) {
+//            addPlayer("BLACK", gameID, blackAuth);
+//        }
+//    }
 }

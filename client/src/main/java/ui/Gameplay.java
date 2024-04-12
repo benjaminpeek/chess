@@ -19,22 +19,6 @@ public class Gameplay implements UI, MessageHandler {
 
 
     public String eval(String input) {
-//        try {
-//            var tokens = input.toLowerCase().split(" ");
-//            var cmd = (tokens.length > 0) ? tokens[0] : "help";
-//            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-//            return switch (cmd) {
-//                case "redraw" -> redrawBoard(params);
-//                case "leave" -> leaveGame(params);
-//                case "makeMove" -> observeGame(params);
-//                case "resign" -> listGames(params);
-//                case "highlight" -> logout();
-//                case "quit" -> "quit";
-//                default -> help();
-//            };
-//        } catch (ResponseException ex) {
-//            return ex.getMessage();
-//        }
 
         return null;
     }
