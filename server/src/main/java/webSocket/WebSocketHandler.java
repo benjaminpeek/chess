@@ -150,15 +150,21 @@ public class WebSocketHandler {
                 }
             }
         }
+        if (chessGame.isGameOver()) {
+            sendErrorMessage(session, "cannot make moves when a game is over");
+            return;
+        }
         if (chessGame.isInCheck(ChessGame.TeamColor.WHITE)) {
             webSocketSessions.broadcastMessage(gameID, new Notification(whiteUsername + " is in check! "), authToken);
         }
         if (chessGame.isInCheck(ChessGame.TeamColor.BLACK)) {
             webSocketSessions.broadcastMessage(gameID, new Notification(blackUsername + " is in check! "), authToken);
         }
-        if (chessGame.isGameOver()) {
-            sendErrorMessage(session, "cannot make moves when a game is over");
-            return;
+        if (chessGame.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            webSocketSessions.broadcastMessage(gameID, new Notification(whiteUsername + " is in checkmate! "), authToken);
+        }
+        if (chessGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            webSocketSessions.broadcastMessage(gameID, new Notification(blackUsername + " is in checkmate! "), authToken);
         }
 
         gameDataAccess.updateGame(gameID, move);

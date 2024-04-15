@@ -40,9 +40,9 @@ public class Gameplay implements UI, MessageHandler {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "redraw" -> redraw();
-                case "leave" -> leaveGame(params);
-                case "makemove" -> makeMove(params);
-                case "resign" -> resignGame(params);
+                case "leave" -> leave(params);
+                case "makemove" -> move(params);
+                case "resign" -> resign(params);
                 case "highlight" -> highlightMoves(params);
                 case "quit" -> "quit";
                 default -> help();
@@ -70,15 +70,15 @@ public class Gameplay implements UI, MessageHandler {
         return null;
     }
 
-    public String leaveGame(String... params) {
+    public String leave(String... params) {
         return null;
     }
 
-    public String makeMove(String... params) {
+    public String move(String... params) {
         return null;
     }
 
-    public String resignGame(String... params) {
+    public String resign(String... params) {
         return null;
     }
 
