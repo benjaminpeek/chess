@@ -12,7 +12,7 @@ import java.net.URL;
 
 public class ServerFacade {
     private final String serverUrl;
-    private static String authToken;
+    private String authToken;
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -108,6 +108,10 @@ public class ServerFacade {
 
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
+    }
+
+    public String getAuthToken() {
+        return this.authToken;
     }
 
 }

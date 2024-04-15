@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import clientRepl.Repl;
 import exceptions.ResponseException;
 import model.GameData;
@@ -18,7 +19,7 @@ public class PostLogin implements UI {
     private final String serverUrl;
     private final ServerFacade serverFacade;
     private Collection<GameData> serverGames;
-    private DrawBoard drawingBoard;
+
     public PostLogin(String serverUrl) throws ResponseException {
         this.serverFacade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
@@ -65,17 +66,19 @@ public class PostLogin implements UI {
             String playerColor = params[0];
             try {
                 serverFacade.joinGame(new JoinGameRequest(playerColor.toUpperCase(), Integer.parseInt(gameID)));
+                Repl.gameID = Integer.parseInt(gameID);
+                Repl.playerColor = ChessGame.TeamColor.valueOf(playerColor);
                 Repl.currentUI = new Gameplay(serverUrl);
                 for (GameData game : serverGames) {
                     if (game.gameID() == Integer.parseInt(gameID)) {
-                        drawingBoard = new DrawBoard(game.game());
+                        Repl.drawingBoard = new DrawBoard(game.game());
                     }
                 }
             } catch (ResponseException e) {
                 return e.getMessage();
             }
-            drawingBoard.drawWhite();
-            drawingBoard.drawBlack();
+            Repl.drawingBoard.drawWhite();
+            Repl.drawingBoard.drawBlack();
             return String.format("Joined game %s as %s", gameID, playerColor);
         }
         throw new ResponseException(400, "Expected: <playerColor: WHITE or BLACK> <game ID>");
@@ -88,14 +91,15 @@ public class PostLogin implements UI {
                 serverFacade.joinGame(new JoinGameRequest(null, Integer.parseInt(gameID)));
                 for (GameData game : serverGames) {
                     if (game.gameID() == Integer.parseInt(gameID)) {
-                        drawingBoard = new DrawBoard(game.game());
+                        Repl.drawingBoard = new DrawBoard(game.game());
                     }
                 }
+                Repl.currentUI = new Gameplay(serverUrl);
             } catch (ResponseException e) {
                 return e.getMessage();
             }
-            drawingBoard.drawWhite();
-            drawingBoard.drawBlack();
+            Repl.drawingBoard.drawWhite();
+            Repl.drawingBoard.drawBlack();
             return String.format("Joined game %s as an observer", gameID);
         }
         throw new ResponseException(400, "Expected: <game ID>");

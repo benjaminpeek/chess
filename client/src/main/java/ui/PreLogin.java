@@ -13,6 +13,7 @@ import static visual.EscapeSequences.*;
 public class PreLogin implements UI {
     private final String serverUrl;
     private final ServerFacade serverFacade;
+    private String authToken;
 
     public PreLogin(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -54,6 +55,7 @@ public class PreLogin implements UI {
                 serverFacade.login(new LoginRequest(params[0], params[1]));
                 Repl.currentUI = new PostLogin(serverUrl);
                 Repl.username = params[0];
+                Repl.authToken = serverFacade.getAuthToken();
                 System.out.print(RESET_TEXT_COLOR);
             } catch (ResponseException e) {
                 return e.getMessage();

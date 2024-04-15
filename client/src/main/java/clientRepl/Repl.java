@@ -1,7 +1,9 @@
 package clientRepl;
 
+import chess.ChessGame;
 import ui.PreLogin;
 import ui.UI;
+import visual.DrawBoard;
 
 import java.util.Scanner;
 
@@ -10,6 +12,10 @@ import static visual.EscapeSequences.*;
 public class Repl {
     public static UI currentUI;
     public static String username;
+    public static String authToken;
+    public static int gameID;
+    public static ChessGame.TeamColor playerColor;
+    public static DrawBoard drawingBoard;
 
     public Repl(String serverUrl) {
         currentUI = new PreLogin(serverUrl);

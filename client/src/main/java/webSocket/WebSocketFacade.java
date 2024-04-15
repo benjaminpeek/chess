@@ -1,7 +1,10 @@
 package webSocket;
+import chess.ChessMove;
+import clientRepl.Repl;
 import com.google.gson.Gson;
 import exceptions.ResponseException;
 import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.*;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -22,16 +25,61 @@ public class WebSocketFacade extends Endpoint {
             this.session = container.connectToServer(this, socketURI);
 
             //set message handler
+            //noinspection Convert2Lambda
             this.session.addMessageHandler(new javax.websocket.MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    messageHandler.notify(notification, message);
+                    messageHandler.notify(notification);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
+    }
+
+    public void joinPlayer() throws ResponseException {
+        try {
+            sendMessage(new JoinPlayer(Repl.authToken, Repl.gameID, Repl.playerColor));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void joinObserver() throws ResponseException {
+        try {
+            sendMessage(new JoinObserver(Repl.authToken, Repl.gameID));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void makeMove(ChessMove move) throws ResponseException {
+        try {
+            sendMessage(new MakeMove(Repl.authToken, Repl.gameID, move));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void leaveGame() throws ResponseException {
+        try {
+            sendMessage(new LeaveGame(Repl.authToken, Repl.gameID));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void resignGame() throws ResponseException {
+        try {
+            sendMessage(new ResignGame(Repl.authToken, Repl.gameID));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void sendMessage(UserGameCommand command) throws IOException {
+        this.session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
     @Override

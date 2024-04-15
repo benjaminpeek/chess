@@ -220,6 +220,7 @@ public class WebSocketHandler {
         }
 
         // remove white and black player if they exist
+        // update the game to over
         if (gameDataAccess.getGame(gameID).whiteUsername() != null) {
             gameDataAccess.removePlayer("WHITE", gameID, authToken);
         }
