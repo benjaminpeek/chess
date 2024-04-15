@@ -32,6 +32,14 @@ public class Gameplay implements UI, MessageHandler {
         }
     }
 
+    @Override
+    public void notify(ServerMessage notification) {
+        switch (notification.getServerMessageType()) {
+            case LOAD_GAME -> redraw();
+            case ERROR -> printError(new Gson().toJson(notification));
+            case NOTIFICATION -> printNotification(new Gson().toJson(notification));
+        }
+    }
 
     public String eval(String input) {
         try {
@@ -40,24 +48,15 @@ public class Gameplay implements UI, MessageHandler {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "redraw" -> redraw();
-                case "leave" -> leave(params);
+                case "leave" -> leave();
                 case "makemove" -> move(params);
-                case "resign" -> resign(params);
+                case "resign" -> resign();
                 case "highlight" -> highlightMoves(params);
                 case "quit" -> "quit";
                 default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
-        }
-    }
-
-    @Override
-    public void notify(ServerMessage notification) {
-        switch (notification.getServerMessageType()) {
-            case LOAD_GAME -> redraw();
-            case ERROR -> printError(new Gson().toJson(notification));
-            case NOTIFICATION -> printNotification(new Gson().toJson(notification));
         }
     }
 
@@ -70,8 +69,17 @@ public class Gameplay implements UI, MessageHandler {
         return null;
     }
 
-    public String leave(String... params) {
-        return null;
+    public String leave(String... params) throws ResponseException {
+        if (params.length == 0) {
+            try {
+                webSocketFacade.leaveGame();
+                Repl.currentUI = new PostLogin(serverUrl);
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+            return String.format("Left game " + Repl.gameID);
+        }
+        throw new ResponseException(400, "leave game was not valid");
     }
 
     public String move(String... params) {
@@ -90,10 +98,10 @@ public class Gameplay implements UI, MessageHandler {
     public String help() {
         return """
              - redraw - redraws the chess board
-             - leave - removes the user from the game (whether they are playing or observing the game) <gameID>
-             - makemove - allow the user to input what move they want to make: (startPosition endPosition) => <a-h0-9 a-h0-9>
-             - resign - the user forfeits the game and the game is over <gameID>
-             - highlight - input what piece for which you want to highlight legal moves <piecePosition> => <a-h0-9>
+             - leave - removes the user from the game (whether playing or observing)
+             - makemove - allow the user to input what move they want to make: <startPosition> <endPosition> => <a-h0-9> <a-h0-9>
+             - resign - the user forfeits the game and the game is over
+             - highlight - input the position of the piece for which you want to highlight its legal moves <piecePosition> => <a-h0-9>
              - quit - exit the program
              - help - explains what each command does
              """;
