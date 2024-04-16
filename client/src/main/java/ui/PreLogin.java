@@ -42,7 +42,6 @@ public class PreLogin implements UI {
             Repl.username = params[0];
             serverFacade.register(new RegisterRequest(params[0], params[1], params[2]));
             Repl.authToken = serverFacade.getAuthToken();
-            System.out.println(Repl.authToken);
             return String.format("You registered as %s.", Repl.username);
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");

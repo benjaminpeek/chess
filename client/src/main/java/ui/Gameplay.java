@@ -29,6 +29,7 @@ public class Gameplay implements UI, MessageHandler {
             webSocketFacade.joinPlayer();
         } else {
             webSocketFacade.joinObserver();
+            Repl.drawingBoard.drawWhite();
         }
 
     }
@@ -111,9 +112,9 @@ public class Gameplay implements UI, MessageHandler {
             } catch (ResponseException e) {
                 return e.getMessage();
             }
-            return "you resigned from the game";
+            return "resigned the game";
         }
-        throw new ResponseException(400, "leave game was not valid");
+        throw new ResponseException(400, "resign game command was not valid");
     }
 
     public String highlightMoves(String... params) {
