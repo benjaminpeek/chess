@@ -104,8 +104,11 @@ public class DrawBoard {
                 for (int i = 1; i < 9; i++) {
                     if (highlights != null) {
                         for (ChessMove move : highlights) {
+                            if (move.getStartPosition().getRow() == row && move.getStartPosition().getColumn() == i) {
+                                System.out.print(SET_BG_COLOR_BLUE);
+                            }
                             if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
-                                if (row % 2 == 0) {
+                                if ((row % 2 == 0 && i % 2 != 0) || (row % 2 != 0 && i % 2 == 0)) {
                                     System.out.print(SET_BG_COLOR_GREEN);
                                 } else {
                                     System.out.print(SET_BG_COLOR_DARK_GREEN);
@@ -121,6 +124,9 @@ public class DrawBoard {
                 for (int i = 8; i > 0; i--) {
                     if (highlights != null) {
                         for (ChessMove move : highlights) {
+                            if (move.getStartPosition().getRow() == row && move.getStartPosition().getColumn() == i) {
+                                System.out.print(SET_BG_COLOR_BLUE);
+                            }
                             if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
                                 if (row % 2 == 0) {
                                     System.out.print(SET_BG_COLOR_GREEN);
