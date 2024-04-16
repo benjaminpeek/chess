@@ -96,14 +96,14 @@ public class Gameplay implements UI, MessageHandler {
             String endPosition = params[1];
             ChessMove move = createMove(startPosition, endPosition);
             // now check for promotion moves
-//            if (Repl.drawingBoard.getGame().getBoard().getPiece(move.getStartPosition()).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
-//                Collection<ChessMove> validMoves = Repl.drawingBoard.getGame().validMoves(move.getStartPosition());
-//                for (ChessMove valMove : validMoves) {
-//                    if (valMove.getPromotionPiece() != null) {
-//
-//                    }
-//                }
-//            }
+            if (Repl.drawingBoard.getGame().getBoard().getPiece(move.getStartPosition()).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
+                Collection<ChessMove> validMoves = Repl.drawingBoard.getGame().validMoves(move.getStartPosition());
+                for (ChessMove valMove : validMoves) {
+                    if (valMove.getPromotionPiece() != null) {
+                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), move.getPromotionPiece());
+                    }
+                }
+            }
 
             try {
                 webSocketFacade.makeMove(move);
