@@ -13,7 +13,6 @@ import static visual.EscapeSequences.*;
 public class PreLogin implements UI {
     private final String serverUrl;
     private final ServerFacade serverFacade;
-    private String authToken;
 
     public PreLogin(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -42,6 +41,8 @@ public class PreLogin implements UI {
         if (params.length >= 2) {
             Repl.username = params[0];
             serverFacade.register(new RegisterRequest(params[0], params[1], params[2]));
+            Repl.authToken = serverFacade.getAuthToken();
+            System.out.println(Repl.authToken);
             return String.format("You registered as %s.", Repl.username);
         }
         throw new ResponseException(400, "Expected: <username> <password> <email>");
@@ -52,10 +53,10 @@ public class PreLogin implements UI {
             Repl.username = params[0];
             // change the "state" to logged in
             try {
+                // debugg this stuff buddy
                 serverFacade.login(new LoginRequest(params[0], params[1]));
-                Repl.currentUI = new PostLogin(serverUrl);
-                Repl.username = params[0];
                 Repl.authToken = serverFacade.getAuthToken();
+                Repl.currentUI = new PostLogin(serverUrl);
                 System.out.print(RESET_TEXT_COLOR);
             } catch (ResponseException e) {
                 return e.getMessage();

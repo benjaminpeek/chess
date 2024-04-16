@@ -30,12 +30,16 @@ public class Gameplay implements UI, MessageHandler {
         } else {
             webSocketFacade.joinObserver();
         }
+
     }
 
     @Override
     public void notify(ServerMessage notification) {
         switch (notification.getServerMessageType()) {
-            case LOAD_GAME -> redraw();
+            case LOAD_GAME ->  {
+                System.out.println("\n");
+                redraw();
+            }
             case ERROR -> printError(new Gson().toJson(notification));
             case NOTIFICATION -> printNotification(new Gson().toJson(notification));
         }
@@ -61,12 +65,12 @@ public class Gameplay implements UI, MessageHandler {
     }
 
     public String redraw() {
-        if (Repl.playerColor.equals(ChessGame.TeamColor.BLACK)) {
+        if (Repl.playerColor != null && Repl.playerColor.equals(ChessGame.TeamColor.BLACK)) {
             Repl.drawingBoard.drawBlack();
         } else {
             Repl.drawingBoard.drawWhite();
         }
-        return null;
+        return "";
     }
 
     public String leave(String... params) throws ResponseException {
@@ -77,17 +81,39 @@ public class Gameplay implements UI, MessageHandler {
             } catch (ResponseException e) {
                 return e.getMessage();
             }
-            return String.format("Left game " + Repl.gameID);
+            return "you left the game";
         }
         throw new ResponseException(400, "leave game was not valid");
     }
 
-    public String move(String... params) {
-        return null;
+    public String move(String... params) throws ResponseException {
+        if (params.length >= 2) {
+            String startPosition = params[0];
+            String endPosition = params[1];
+            // translate the letters to numbers, and split each parameter into ChessPosition objects
+            try {
+                webSocketFacade.makeMove(null);
+                Repl.currentUI = new PostLogin(serverUrl);
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+            return String.format("you left game " + Repl.gameID);
+        }
+        throw new ResponseException(400, "leave game was not valid");
     }
 
-    public String resign(String... params) {
-        return null;
+    public String resign(String... params) throws ResponseException {
+        if (params.length == 0) {
+            try {
+                webSocketFacade.resignGame();
+                // dont leave thiss
+//                Repl.currentUI = new PostLogin(serverUrl);
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+            return "you resigned from the game";
+        }
+        throw new ResponseException(400, "leave game was not valid");
     }
 
     public String highlightMoves(String... params) {
@@ -99,9 +125,9 @@ public class Gameplay implements UI, MessageHandler {
         return """
              - redraw - redraws the chess board
              - leave - removes the user from the game (whether playing or observing)
-             - makemove - allow the user to input what move they want to make: <startPosition> <endPosition> => <a-h0-9> <a-h0-9>
+             - makemove - allow the user to input what move they want to make <startPosition> <endPosition> => <a-h1-8> <a-h1-8>
              - resign - the user forfeits the game and the game is over
-             - highlight - input the position of the piece for which you want to highlight its legal moves <piecePosition> => <a-h0-9>
+             - highlight - input the position of the piece for which you want to highlight its legal moves <piecePosition> => <a-h1-8>
              - quit - exit the program
              - help - explains what each command does
              """;

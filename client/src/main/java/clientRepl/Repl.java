@@ -1,6 +1,9 @@
 package clientRepl;
 
 import chess.ChessGame;
+import exceptions.ResponseException;
+import ui.Gameplay;
+import ui.PostLogin;
 import ui.PreLogin;
 import ui.UI;
 import visual.DrawBoard;
@@ -27,7 +30,7 @@ public class Repl {
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
+        while (result != null && !result.equals("quit")) {
             printPrompt();
             String line = scanner.nextLine();
 

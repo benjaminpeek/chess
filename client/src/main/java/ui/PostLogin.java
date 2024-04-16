@@ -22,6 +22,7 @@ public class PostLogin implements UI {
 
     public PostLogin(String serverUrl) throws ResponseException {
         this.serverFacade = new ServerFacade(serverUrl);
+        this.serverFacade.setAuthToken(Repl.authToken);
         this.serverUrl = serverUrl;
         this.serverGames = this.serverFacade.listGames().games();
     }
@@ -63,17 +64,17 @@ public class PostLogin implements UI {
     public String joinGame(String... params) throws ResponseException {
         if (params.length >= 1) {
             String gameID = params[1];
-            String playerColor = params[0];
+            String playerColor = params[0].toUpperCase();
             try {
-                serverFacade.joinGame(new JoinGameRequest(playerColor.toUpperCase(), Integer.parseInt(gameID)));
+                serverFacade.joinGame(new JoinGameRequest(playerColor, Integer.parseInt(gameID)));
                 Repl.gameID = Integer.parseInt(gameID);
                 Repl.playerColor = ChessGame.TeamColor.valueOf(playerColor);
-                Repl.currentUI = new Gameplay(serverUrl);
                 for (GameData game : serverGames) {
                     if (game.gameID() == Integer.parseInt(gameID)) {
                         Repl.drawingBoard = new DrawBoard(game.game());
                     }
                 }
+                Repl.currentUI = new Gameplay(serverUrl);
             } catch (ResponseException e) {
                 return e.getMessage();
             }
@@ -163,4 +164,5 @@ public class PostLogin implements UI {
              - help - explains what each command does
              """;
     }
+
 }
