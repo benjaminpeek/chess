@@ -102,23 +102,36 @@ public class DrawBoard {
         switch (povColor) {
             case WHITE -> {
                 for (int i = 1; i < 9; i++) {
-                    for (ChessMove move : highlights) {
-                        if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
-                            System.out.println(SET_BG_COLOR_GREEN);
+                    if (highlights != null) {
+                        for (ChessMove move : highlights) {
+                            if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
+                                if (row % 2 == 0) {
+                                    System.out.print(SET_BG_COLOR_GREEN);
+                                } else {
+                                    System.out.print(SET_BG_COLOR_DARK_GREEN);
+                                }
+                            }
                         }
                     }
                     drawSquare(board, row, i);
-                    System.out.println(bgColor);
+                    System.out.print(bgColor);
                 }
             }
             case BLACK -> {
                 for (int i = 8; i > 0; i--) {
-                    for (ChessMove move : highlights) {
-                        if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
-                            System.out.println(SET_BG_COLOR_GREEN);
+                    if (highlights != null) {
+                        for (ChessMove move : highlights) {
+                            if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
+                                if (row % 2 == 0) {
+                                    System.out.print(SET_BG_COLOR_GREEN);
+                                } else {
+                                    System.out.print(SET_BG_COLOR_DARK_GREEN);
+                                }
+                            }
                         }
                     }
                     drawSquare(board, row, i);
+                    System.out.print(bgColor);
                 }
             }
         }
@@ -168,7 +181,6 @@ public class DrawBoard {
 
     public void highlightMoves(ChessPosition piecePosition) {
         Collection<ChessMove> moves = this.game.validMoves(piecePosition);
-
         switch (povColor) {
             case WHITE -> drawWhite(moves);
             case BLACK -> drawBlack(moves);
