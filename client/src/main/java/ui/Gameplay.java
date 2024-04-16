@@ -21,7 +21,6 @@ import static visual.EscapeSequences.*;
 public class Gameplay implements UI, MessageHandler {
     private final String serverUrl;
     private final WebSocketFacade webSocketFacade;
-    private ChessMove move;
 
     public Gameplay(String serverUrl) throws ResponseException {
         this.serverUrl = serverUrl;
@@ -96,6 +95,16 @@ public class Gameplay implements UI, MessageHandler {
             String startPosition = params[0];
             String endPosition = params[1];
             ChessMove move = createMove(startPosition, endPosition);
+            // now check for promotion moves
+//            if (Repl.drawingBoard.getGame().getBoard().getPiece(move.getStartPosition()).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
+//                Collection<ChessMove> validMoves = Repl.drawingBoard.getGame().validMoves(move.getStartPosition());
+//                for (ChessMove valMove : validMoves) {
+//                    if (valMove.getPromotionPiece() != null) {
+//
+//                    }
+//                }
+//            }
+
             try {
                 webSocketFacade.makeMove(move);
             } catch (ResponseException e) {
@@ -119,6 +128,8 @@ public class Gameplay implements UI, MessageHandler {
     }
 
     public String highlightMoves(String... params) {
+
+
         return null;
     }
 
@@ -148,26 +159,15 @@ public class Gameplay implements UI, MessageHandler {
     }
 
     private ChessMove createMove(String startPos, String endPos) {
-        int startRow = startPos.charAt(1);
+        int startRow = startPos.charAt(1) - '0';
         int startCol = charToInt(startPos.charAt(0));
         ChessPosition startPosition = new ChessPosition(startRow, startCol);
 
-        int endRow = endPos.charAt(1);
+        int endRow = endPos.charAt(1) - '0';
         int endCol = charToInt(endPos.charAt(0));
         ChessPosition endPosition = new ChessPosition(endRow, endCol);
 
-        ChessPiece.PieceType promoPiece = null;
-        // check if move could promote, if the piece is a pawn
-        if (Repl.drawingBoard.getGame().getBoard().getPiece(startPosition).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
-            Collection<ChessMove> pieceMoves = Repl.drawingBoard.getGame().validMoves(startPosition);
-            for (ChessMove move : pieceMoves) {
-                if (move.getPromotionPiece() != null && move.getStartPosition().equals(startPosition)) {
-                    promoPiece = move.getPromotionPiece();
-                }
-            }
-        }
-
-        return new ChessMove(startPosition, endPosition, promoPiece);
+        return new ChessMove(startPosition, endPosition, null);
     }
 
     private int charToInt(char x) {
