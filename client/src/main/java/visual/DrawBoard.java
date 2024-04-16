@@ -143,4 +143,12 @@ public class DrawBoard {
         }
         System.out.print(textColor);
     }
+
+    public void setGame(ChessGame game) {
+        this.game = game;
+    }
+
+    public ChessGame getGame() {
+        return this.game;
+    }
 }

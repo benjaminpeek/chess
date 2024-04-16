@@ -1,25 +1,26 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import clientRepl.Repl;
 import com.google.gson.Gson;
 import exceptions.ResponseException;
 import webSocket.MessageHandler;
 import webSocket.WebSocketFacade;
+import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import static visual.EscapeSequences.*;
 
 public class Gameplay implements UI, MessageHandler {
     private final String serverUrl;
     private final WebSocketFacade webSocketFacade;
-    private ChessGame currGame;
-    private ChessBoard currBoard;
     private ChessMove move;
 
     public Gameplay(String serverUrl) throws ResponseException {
@@ -35,14 +36,17 @@ public class Gameplay implements UI, MessageHandler {
     }
 
     @Override
-    public void notify(ServerMessage notification) {
-        switch (notification.getServerMessageType()) {
+    public void notify(String notification) {
+        ServerMessage serverMessage = new Gson().fromJson(notification, ServerMessage.class);
+        switch (serverMessage.getServerMessageType()) {
             case LOAD_GAME ->  {
+                LoadGame loadGame = new Gson().fromJson(notification, LoadGame.class);
+                Repl.drawingBoard.setGame(loadGame.getGame().game());
                 System.out.println("\n");
                 redraw();
             }
-            case ERROR -> printError(new Gson().toJson(notification));
-            case NOTIFICATION -> printNotification(new Gson().toJson(notification));
+            case ERROR -> printError(notification);
+            case NOTIFICATION -> printNotification(notification);
         }
     }
 
@@ -91,24 +95,21 @@ public class Gameplay implements UI, MessageHandler {
         if (params.length >= 2) {
             String startPosition = params[0];
             String endPosition = params[1];
-            // translate the letters to numbers, and split each parameter into ChessPosition objects
+            ChessMove move = createMove(startPosition, endPosition);
             try {
-                webSocketFacade.makeMove(null);
-                Repl.currentUI = new PostLogin(serverUrl);
+                webSocketFacade.makeMove(move);
             } catch (ResponseException e) {
                 return e.getMessage();
             }
-            return String.format("you left game " + Repl.gameID);
+            return "";
         }
-        throw new ResponseException(400, "leave game was not valid");
+        throw new ResponseException(400, "move was not valid");
     }
 
     public String resign(String... params) throws ResponseException {
         if (params.length == 0) {
             try {
                 webSocketFacade.resignGame();
-                // dont leave thiss
-//                Repl.currentUI = new PostLogin(serverUrl);
             } catch (ResponseException e) {
                 return e.getMessage();
             }
@@ -144,5 +145,43 @@ public class Gameplay implements UI, MessageHandler {
         Error error = new Gson().fromJson(message, Error.class);
         System.out.print("\n" + RESET_TEXT_COLOR + ">>> " + SET_TEXT_COLOR_RED);
         System.out.println(error.getMessage());
+    }
+
+    private ChessMove createMove(String startPos, String endPos) {
+        int startRow = startPos.charAt(1);
+        int startCol = charToInt(startPos.charAt(0));
+        ChessPosition startPosition = new ChessPosition(startRow, startCol);
+
+        int endRow = endPos.charAt(1);
+        int endCol = charToInt(endPos.charAt(0));
+        ChessPosition endPosition = new ChessPosition(endRow, endCol);
+
+        ChessPiece.PieceType promoPiece = null;
+        // check if move could promote, if the piece is a pawn
+        if (Repl.drawingBoard.getGame().getBoard().getPiece(startPosition).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
+            Collection<ChessMove> pieceMoves = Repl.drawingBoard.getGame().validMoves(startPosition);
+            for (ChessMove move : pieceMoves) {
+                if (move.getPromotionPiece() != null && move.getStartPosition().equals(startPosition)) {
+                    promoPiece = move.getPromotionPiece();
+                }
+            }
+        }
+
+        return new ChessMove(startPosition, endPosition, promoPiece);
+    }
+
+    private int charToInt(char x) {
+        int num = 0;
+        switch (x) {
+            case 'a' -> num = 1;
+            case 'b' -> num = 2;
+            case 'c' -> num = 3;
+            case 'd' -> num = 4;
+            case 'e' -> num = 5;
+            case 'f' -> num = 6;
+            case 'g' -> num = 7;
+            case 'h' -> num = 8;
+        }
+        return num;
     }
 }
