@@ -4,6 +4,9 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import chess.ChessMove;
+
+import java.util.Collection;
 
 import static visual.EscapeSequences.*;
 
@@ -17,7 +20,7 @@ public class DrawBoard {
         this.game = game;
     }
 
-    public void drawWhite() {
+    public void drawWhite(Collection<ChessMove> highlights) {
         povColor = ChessGame.TeamColor.WHITE;
 
         // header letters
@@ -27,7 +30,7 @@ public class DrawBoard {
         System.out.println();
         // draw the rows
         for (int i = 8; i > 0; i--) {
-            drawRow(this.game.getBoard(), i);
+            drawRow(this.game.getBoard(), i, highlights);
         }
         // footer letters
         drawLetters();
@@ -38,7 +41,7 @@ public class DrawBoard {
         System.out.println();
     }
 
-    public void drawBlack() {
+    public void drawBlack(Collection<ChessMove> highlights) {
         povColor = ChessGame.TeamColor.BLACK;
 
         // header letters
@@ -48,7 +51,7 @@ public class DrawBoard {
         System.out.println();
         // draw the rows
         for (int i = 1; i < 9; i++) {
-            drawRow(this.game.getBoard(), i);
+            drawRow(this.game.getBoard(), i, highlights);
         }
         // footer letters
         drawLetters();
@@ -88,7 +91,7 @@ public class DrawBoard {
         System.out.print(EMPTY);
     }
 
-    private void drawRow(ChessBoard board, int row) {
+    private void drawRow(ChessBoard board, int row, Collection<ChessMove> highlights) {
         System.out.print(SET_BG_COLOR_BLACK);
         System.out.print(" " + row + " ");
 
@@ -99,11 +102,22 @@ public class DrawBoard {
         switch (povColor) {
             case WHITE -> {
                 for (int i = 1; i < 9; i++) {
+                    for (ChessMove move : highlights) {
+                        if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
+                            System.out.println(SET_BG_COLOR_GREEN);
+                        }
+                    }
                     drawSquare(board, row, i);
+                    System.out.println(bgColor);
                 }
             }
             case BLACK -> {
                 for (int i = 8; i > 0; i--) {
+                    for (ChessMove move : highlights) {
+                        if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == i) {
+                            System.out.println(SET_BG_COLOR_GREEN);
+                        }
+                    }
                     drawSquare(board, row, i);
                 }
             }
@@ -151,4 +165,14 @@ public class DrawBoard {
     public ChessGame getGame() {
         return this.game;
     }
+
+    public void highlightMoves(ChessPosition piecePosition) {
+        Collection<ChessMove> moves = this.game.validMoves(piecePosition);
+
+        switch (povColor) {
+            case WHITE -> drawWhite(moves);
+            case BLACK -> drawBlack(moves);
+        }
+    }
+
 }

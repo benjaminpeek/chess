@@ -29,7 +29,7 @@ public class Gameplay implements UI, MessageHandler {
             webSocketFacade.joinPlayer();
         } else {
             webSocketFacade.joinObserver();
-            Repl.drawingBoard.drawWhite();
+            Repl.drawingBoard.drawWhite(null);
         }
 
     }
@@ -70,9 +70,9 @@ public class Gameplay implements UI, MessageHandler {
 
     public String redraw() {
         if (Repl.playerColor != null && Repl.playerColor.equals(ChessGame.TeamColor.BLACK)) {
-            Repl.drawingBoard.drawBlack();
+            Repl.drawingBoard.drawBlack(null);
         } else {
-            Repl.drawingBoard.drawWhite();
+            Repl.drawingBoard.drawWhite(null);
         }
         return "";
     }
@@ -127,10 +127,16 @@ public class Gameplay implements UI, MessageHandler {
         throw new ResponseException(400, "resign game command was not valid");
     }
 
-    public String highlightMoves(String... params) {
-
-
-        return null;
+    public String highlightMoves(String... params) throws ResponseException {
+        if (params.length >= 1) {
+            String startPosition = params[0];
+            int startRow = startPosition.charAt(1) - '0';
+            int startCol = charToInt(startPosition.charAt(0));
+            ChessPosition position = new ChessPosition(startRow, startCol);
+            Repl.drawingBoard.highlightMoves(position);
+            return "";
+        }
+        throw new ResponseException(400, "highlight command was not valid");
     }
 
     @Override
@@ -184,4 +190,5 @@ public class Gameplay implements UI, MessageHandler {
         }
         return num;
     }
+
 }
