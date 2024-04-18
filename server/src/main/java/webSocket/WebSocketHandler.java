@@ -154,20 +154,23 @@ public class WebSocketHandler {
             sendErrorMessage(session, "cannot make moves when a game is over");
             return;
         }
-        if (chessGame.isInCheck(ChessGame.TeamColor.WHITE)) {
-            webSocketSessions.broadcastMessage(gameID, new Notification(whiteUsername + " is in check! "), authToken);
-        }
-        if (chessGame.isInCheck(ChessGame.TeamColor.BLACK)) {
-            webSocketSessions.broadcastMessage(gameID, new Notification(blackUsername + " is in check! "), authToken);
-        }
-        if (chessGame.isInCheckmate(ChessGame.TeamColor.WHITE)) {
-            webSocketSessions.broadcastMessage(gameID, new Notification(whiteUsername + " is in checkmate! "), authToken);
-        }
-        if (chessGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
-            webSocketSessions.broadcastMessage(gameID, new Notification(blackUsername + " is in checkmate! "), authToken);
-        }
 
         gameDataAccess.updateGame(gameID, move);
+        chessGame.makeMove(move);
+
+        if (chessGame.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(whiteUsername + " is in checkmate! "));
+        }
+        if (chessGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(blackUsername + " is in checkmate! "));
+        }
+        if (chessGame.isInCheck(ChessGame.TeamColor.WHITE)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(whiteUsername + " is in check! "));
+        }
+        if (chessGame.isInCheck(ChessGame.TeamColor.BLACK)) {
+            webSocketSessions.broadcastMessageAll(gameID, new Notification(blackUsername + " is in check! "));
+        }
+
         webSocketSessions.broadcastMessageAll(gameID, new LoadGame(gameDataAccess.getGame(gameID)));
         webSocketSessions.broadcastMessage(gameID, new Notification(authDataAccess.getAuth(authToken).username()
          + " made move " + move), authToken);

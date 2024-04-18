@@ -95,7 +95,7 @@ public class Gameplay implements UI, MessageHandler {
             String startPosition = params[0];
             String endPosition = params[1];
             ChessMove move = createMove(startPosition, endPosition);
-            // now check for promotion moves
+            // now check for promotion moves (not completely finished)
             if (Repl.drawingBoard.getGame().getBoard().getPiece(move.getStartPosition()).getPieceType().equals(ChessPiece.PieceType.PAWN)) {
                 Collection<ChessMove> validMoves = Repl.drawingBoard.getGame().validMoves(move.getStartPosition());
                 for (ChessMove valMove : validMoves) {
